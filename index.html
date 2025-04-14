@@ -60,23 +60,27 @@
       return result;
     }
 
-    function renderHeaders() {
-      const now = new Date();
-      const dateStr = now.toUTCString();
-      const expiresStr = new Date(now.getTime() + 10 * 60000).toUTCString(); // 10 mins later
-      const userAgent = navigator.userAgent;
-      const language = navigator.language;
-      const originNode = 'core-node-09.gnet';
+	function renderHeaders() {
+	  const now = new Date();
+	  const dateStr = now.toUTCString();
+	  const expiresStr = new Date(now.getTime() + 600000).toUTCString(); // 10 mins later
+	  const userAgent = navigator.userAgent;
+	  const language = navigator.language;
 
-      const simulatedHeaders = `Request URL: ${window.location.href}
+	  const traceId = randomHex(16); // ✅ DEFINE FIRST
+	  const originNode = 'core-node-09.gnet';
+
+	  const simulatedHeaders = `Request URL: ${window.location.href}
 Request Method: GET
 Status Code: 200 OK
+Remote Address: 185.199.110.153:443
 Referrer Policy: strict-origin-when-cross-origin
 
 cache-control: max-age=600
 date: ${dateStr}
 expires: ${expiresStr}
 vary: Accept-Encoding
+x-cache: HIT
 x-origin-node: ${originNode}
 trace-id: ${traceId}
 
@@ -85,8 +89,9 @@ accept-encoding: gzip, deflate, br
 accept-language: ${language}
 user-agent: ${userAgent}`;
 
-      typeLine(simulatedHeaders, 'httpOutput');
-    }
+	  typeLine(simulatedHeaders, 'httpOutput');
+	}
+
 
     renderHeaders();
   </script>
