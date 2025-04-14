@@ -23,18 +23,18 @@
       text-shadow: 0 0 8px #33ccff;
     }
 
-	#toggleButton {
-	  display: none; /* hide by default */
-	  background: transparent;
-	  border: 1px solid #00eaff;
-	  color: #00eaff;
-	  padding: 10px 20px;
-	  font-family: inherit;
-	  margin: 0 auto 20px;
-	  text-align: center;
-	  cursor: pointer;
-	  border-radius: 6px;
-	}
+    #toggleButton {
+      display: none; /* hide by default */
+      background: transparent;
+      border: 1px solid #00eaff;
+      color: #00eaff;
+      padding: 10px 20px;
+      font-family: inherit;
+      margin: 0 auto 20px;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 6px;
+    }
 
     pre {
       background-color: #0d1b2a;
@@ -49,10 +49,9 @@
       display: block;
     }
 
-	.line {
-	  display: block; /* to maintain line breaks like <div> but not collapse spacing */
-	}
-
+    .line {
+      display: block;
+    }
 
     .line:hover {
       background-color: rgba(0, 234, 255, 0.1);
@@ -62,30 +61,29 @@
       background-color: rgba(0, 234, 255, 0.2) !important;
     }
 
-	@media (max-width: 768px) {
-	  #toggleButton {
-		display: block;
-	  }
+    @media (max-width: 768px) {
+      #toggleButton {
+        display: block;
+      }
 
-	  pre {
-		display: none;
-	  }
+      pre {
+        display: none;
+      }
 
-	  pre.expanded {
-		display: block;
-	  }
-	}
-	
-	#toggleButton .caret {
-	  display: inline-block;
-	  transition: transform 0.2s ease;
-	  margin-right: 8px;
-	}
+      pre.expanded {
+        display: block;
+      }
+    }
 
-	#toggleButton.expanded .caret {
-	  transform: rotate(90deg);
-	}
+    #toggleButton .caret {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      margin-right: 8px;
+    }
 
+    #toggleButton.expanded .caret {
+      transform: rotate(90deg);
+    }
   </style>
 </head>
 <body>
@@ -103,73 +101,73 @@
           el.textContent += text[i++];
         } else {
           clearInterval(interval);
-          wrapLines(el); // Add tap-to-copy after typing ends
+          wrapLines(el);
         }
       }, delay);
     }
 
-	function wrapLines(el) {
-	  const lines = el.textContent.split('\n');
-	  el.innerHTML = lines.map(line => `<span class="line">${line}</span>\n`).join('');
-	  el.classList.add('expanded');
-	  document.querySelectorAll('.line').forEach(lineEl => {
-		lineEl.addEventListener('click', () => {
-		  const parts = lineEl.textContent.split(/:(.+)/); // splits only on first colon
-		  const value = parts.length > 1 ? parts[1].trim() : lineEl.textContent;
-		  navigator.clipboard.writeText(value);
-		  lineEl.classList.add('copied');
-		  setTimeout(() => lineEl.classList.remove('copied'), 600);
-		});
-	  });
-	}
+    function wrapLines(el) {
+      const lines = el.textContent.split('\n');
+      el.innerHTML = lines.map(line => `<span class="line">${line}</span>\n`).join('');
+      el.classList.add('expanded');
+      document.querySelectorAll('.line').forEach(lineEl => {
+        lineEl.addEventListener('click', () => {
+          const parts = lineEl.textContent.split(/:(.+)/);
+          const value = parts.length > 1 ? parts[1].trim() : lineEl.textContent;
+          navigator.clipboard.writeText(value);
+          lineEl.classList.add('copied');
+          setTimeout(() => lineEl.classList.remove('copied'), 600);
+        });
+      });
+    }
 
     function renderHeaders() {
       const now = new Date();
       const dateStr = now.toUTCString();
-      const expiresStr = new Date(now.getTime() + 600).toUTCString(); // +10 mins
+      const expiresStr = new Date(now.getTime() + 10 * 60 * 1000).toUTCString(); // +10 minutes
       const userAgent = navigator.userAgent;
       const language = navigator.language;
 
-      const simulatedHeaders = `Request URL: ${window.location.href}
-Request Method: GET
-Status Code: 200 OK
-Referrer Policy: strict-origin-when-cross-origin
-
-cache-control: max-age=600
-date: ${dateStr}
-expires: ${expiresStr}
-vary: Accept-Encoding
-x-cache: HIT
-
-accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
-accept-encoding: gzip, deflate, br
-accept-language: ${language}
-user-agent: ${userAgent}`;
+      const simulatedHeaders = [
+        `Request URL: ${window.location.href}`,
+        `Request Method: GET`,
+        `Status Code: 200 OK`,
+        `Referrer Policy: strict-origin-when-cross-origin`,
+        '',
+        `cache-control: max-age=600`,
+        `date: ${dateStr}`,
+        `expires: ${expiresStr}`,
+        `vary: Accept-Encoding`,
+        `x-cache: HIT`,
+        '',
+        `accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8`,
+        `accept-encoding: gzip, deflate, br`,
+        `accept-language: ${language}`,
+        `user-agent: ${userAgent}`
+      ].join('\n');
 
       typeLine(simulatedHeaders, 'httpOutput');
     }
 
-	window.addEventListener('DOMContentLoaded', () => {
-	  const pre = document.getElementById('httpOutput');
-	  const toggleBtn = document.getElementById('toggleButton');
+    window.addEventListener('DOMContentLoaded', () => {
+      const pre = document.getElementById('httpOutput');
+      const toggleBtn = document.getElementById('toggleButton');
 
-	  // Start collapsed on small screens
-	  if (window.innerWidth <= 768) {
-		pre.classList.remove('expanded');
-		toggleBtn.textContent = 'Header Info';
-	  }
+      // Start collapsed on small screens
+      if (window.innerWidth <= 768) {
+        pre.classList.remove('expanded');
+        toggleBtn.classList.remove('expanded');
+        toggleBtn.querySelector('.label').textContent = 'Show Headers';
+      }
 
-	toggleBtn.addEventListener('click', () => {
-	  const expanded = pre.classList.toggle('expanded');
-	  toggleBtn.classList.toggle('expanded', expanded); // <-- added line
+      toggleBtn.addEventListener('click', () => {
+        const expanded = pre.classList.toggle('expanded');
+        toggleBtn.classList.toggle('expanded', expanded);
+        toggleBtn.querySelector('.label').textContent = expanded ? 'Hide Headers' : 'Show Headers';
+      });
 
-	  const label = toggleBtn.querySelector('.label');
-	  label.textContent = expanded ? 'Hide Headers' : 'Show Headers';
-	});
-
-	  renderHeaders();
-	});
-
+      renderHeaders();
+    });
   </script>
 </body>
 </html>
