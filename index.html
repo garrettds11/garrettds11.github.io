@@ -131,26 +131,22 @@
       const userAgent = navigator.userAgent;
       const language = navigator.language;
 
-      const simulatedHeaders = [
-        `Request URL: ${window.location.href}`,
-        `Request Method: GET`,
-        `Status Code: 200 OK`,
-        `Referrer Policy: strict-origin-when-cross-origin`,
-        '',
-        `cache-control: max-age=600`,
-        `date: ${dateStr}`,
-        `expires: ${expiresStr}`,
-        `vary: Accept-Encoding`,
-        `x-cache: HIT`,
-        '',
-        `accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8`,
-        `accept-encoding: gzip, deflate, br`,
-        `accept-language: ${language}`,
-        `user-agent: ${userAgent}`
-      ].join('\n');
+	  const simulatedHeaders = [
+		`Request URL: ${window.location.href}`,
+		`Request Method: GET`,
+		`Status Code: 200 OK`,
+		`Referrer Policy: strict-origin-when-cross-origin`,
+		`cache-control: max-age=600`,
+		`date: ${dateStr}`,
+		`expires: ${expiresStr}`,
+		`vary: Accept-Encoding`,
+		`x-cache: HIT`,
+		`accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8`,
+		`accept-encoding: gzip, deflate, br`,
+		`accept-language: ${language}`,
+		`user-agent: ${userAgent}`
+	  ].join('\n');
 
-      typeLine(simulatedHeaders, 'httpOutput');
-    }
 
     window.addEventListener('DOMContentLoaded', () => {
       const pre = document.getElementById('httpOutput');
