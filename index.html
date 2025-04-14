@@ -49,10 +49,10 @@
       display: block;
     }
 
-    .line {
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
+	.line {
+	  display: block; /* to maintain line breaks like <div> but not collapse spacing */
+	}
+
 
     .line:hover {
       background-color: rgba(0, 234, 255, 0.1);
@@ -75,11 +75,22 @@
 		display: block;
 	  }
 	}
+	
+	#toggleButton .caret {
+	  display: inline-block;
+	  transition: transform 0.2s ease;
+	  margin-right: 8px;
+	}
+
+	#toggleButton.expanded .caret {
+	  transform: rotate(90deg);
+	}
+
   </style>
 </head>
 <body>
   <h1>Web Status</h1>
-  <button id="toggleButton">Show Headers</button>
+  <button id="toggleButton"><span class="caret">▶</span> <span class="label">Show Headers</span></button>
   <pre id="httpOutput">Initializing network diagnostics...</pre>
 
   <script>
@@ -99,7 +110,7 @@
 
 	function wrapLines(el) {
 	  const lines = el.textContent.split('\n');
-	  el.innerHTML = lines.map(line => `<div class="line">${line}</div>`).join('');
+	  el.innerHTML = lines.map(line => `<span class="line">${line}</span>\n`).join('');
 	  el.classList.add('expanded');
 	  document.querySelectorAll('.line').forEach(lineEl => {
 		lineEl.addEventListener('click', () => {
@@ -148,10 +159,13 @@ user-agent: ${userAgent}`;
 		toggleBtn.textContent = 'Header Info';
 	  }
 
-	  toggleBtn.addEventListener('click', () => {
-		const expanded = pre.classList.toggle('expanded');
-		toggleBtn.textContent = expanded ? 'Hide Headers' : 'Show Headers';
-	  });
+	toggleBtn.addEventListener('click', () => {
+	  const expanded = pre.classList.toggle('expanded');
+	  toggleBtn.classList.toggle('expanded', expanded); // <-- added line
+
+	  const label = toggleBtn.querySelector('.label');
+	  label.textContent = expanded ? 'Hide Headers' : 'Show Headers';
+	});
 
 	  renderHeaders();
 	});
