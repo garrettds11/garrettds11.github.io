@@ -23,18 +23,18 @@
       text-shadow: 0 0 BLACK;
     }
 
-	#toggleButton {
-	  display: none; /* hide by default */
-	  background: transparent;
-	  border: 1px solid #00eaff;
-	  color: #00eaff;
-	  padding: 10px 20px;
-	  font-family: inherit;
-	  margin: 0 auto 20px;
-	  text-align: center;
-	  cursor: pointer;
-	  border-radius: 6px;
-	}
+    #toggleButton {
+      display: none;
+      background: transparent;
+      border: 1px solid #00eaff;
+      color: #00eaff;
+      padding: 10px 20px;
+      font-family: inherit;
+      margin: 0 auto 20px;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 6px;
+    }
 
     pre {
       background-color: #0d1b2a;
@@ -62,36 +62,38 @@
       background-color: rgba(0, 234, 255, 0.2) !important;
     }
 
-	@media (max-width: 768px) {
-	  #toggleButton {
-		display: block;
-	  }
+    @media (max-width: 768px) {
+      #toggleButton {
+        display: block;
+      }
 
-	  pre {
-		display: none;
-	  }
+      pre {
+        display: none;
+      }
 
-	  pre.expanded {
-		display: block;
-	  }
-	}
-	
-	#toggleButton .caret {
-	  display: inline-block;
-	  transition: transform 0.2s ease;
-	  margin-right: 8px;
-	}
+      pre.expanded {
+        display: block;
+      }
+    }
 
-	#toggleButton.expanded .caret {
-	  transform: rotate(90deg);
-	}
+    #toggleButton .caret {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      margin-right: 8px;
+    }
 
+    #toggleButton.expanded .caret {
+      transform: rotate(90deg);
+    }
   </style>
 </head>
 <body>
   <h1>Web Status</h1>
   <button id="toggleButton"><span class="caret">▶</span> <span class="label">Show Headers</span></button>
   <pre id="httpOutput">Initializing network diagnostics...</pre>
+
+  <!-- 🔊 Blip Sound Audio Element -->
+  <audio id="toggleSound" src="blip.mp3" preload="auto"></audio>
 
   <script>
     function typeLine(text, elementId, delay = 10) {
@@ -103,25 +105,25 @@
           el.textContent += text[i++];
         } else {
           clearInterval(interval);
-          wrapLines(el); // Add tap-to-copy after typing ends
+          wrapLines(el);
         }
       }, delay);
     }
 
-	function wrapLines(el) {
-	  const lines = el.textContent.split('\n');
-	  el.innerHTML = lines.map(line => `<div class="line">${line}</div>`).join('');
-	  el.classList.add('expanded');
-	  document.querySelectorAll('.line').forEach(lineEl => {
-		lineEl.addEventListener('click', () => {
-		  const parts = lineEl.textContent.split(/:(.+)/); // splits only on first colon
-		  const value = parts.length > 1 ? parts[1].trim() : lineEl.textContent;
-		  navigator.clipboard.writeText(value);
-		  lineEl.classList.add('copied');
-		  setTimeout(() => lineEl.classList.remove('copied'), 600);
-		});
-	  });
-	}
+    function wrapLines(el) {
+      const lines = el.textContent.split('\n');
+      el.innerHTML = lines.map(line => `<div class="line">${line}</div>`).join('');
+      el.classList.add('expanded');
+      document.querySelectorAll('.line').forEach(lineEl => {
+        lineEl.addEventListener('click', () => {
+          const parts = lineEl.textContent.split(/:(.+)/);
+          const value = parts.length > 1 ? parts[1].trim() : lineEl.textContent;
+          navigator.clipboard.writeText(value);
+          lineEl.classList.add('copied');
+          setTimeout(() => lineEl.classList.remove('copied'), 600);
+        });
+      });
+    }
 
     function renderHeaders() {
       const now = new Date();
@@ -147,27 +149,31 @@ user-agent: ${userAgent}`;
       typeLine(simulatedHeaders, 'httpOutput');
     }
 
-	window.addEventListener('DOMContentLoaded', () => {
-	  const pre = document.getElementById('httpOutput');
-	  const toggleBtn = document.getElementById('toggleButton');
+    window.addEventListener('DOMContentLoaded', () => {
+      const pre = document.getElementById('httpOutput');
+      const toggleBtn = document.getElementById('toggleButton');
+      const sound = document.getElementById('toggleSound');
 
-	  // Start collapsed on small screens
-	  if (window.innerWidth <= 768) {
-		pre.classList.remove('expanded');
-		toggleBtn.textContent = 'Header Info';
-	  }
+      if (window.innerWidth <= 768) {
+        pre.classList.remove('expanded');
+        toggleBtn.textContent = 'Header Info';
+      }
 
-	toggleBtn.addEventListener('click', () => {
-	  const expanded = pre.classList.toggle('expanded');
-	  toggleBtn.classList.toggle('expanded', expanded); // <-- added line
+      toggleBtn.addEventListener('click', () => {
+        const expanded = pre.classList.toggle('expanded');
+        toggleBtn.classList.toggle('expanded', expanded);
+        const label = toggleBtn.querySelector('.label');
+        label.textContent = expanded ? 'Hide Headers' : 'Show Headers';
 
-	  const label = toggleBtn.querySelector('.label');
-	  label.textContent = expanded ? 'Hide Headers' : 'Show Headers';
-	});
+        // 🔊 Play sound on click
+        if (sound) {
+          sound.currentTime = 0;
+          sound.play().catch(() => {});
+        }
+      });
 
-	  renderHeaders();
-	});
-
+      renderHeaders();
+    });
   </script>
 </body>
 </html>
