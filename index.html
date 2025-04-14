@@ -23,19 +23,18 @@
       text-shadow: 0 0 8px #33ccff;
     }
 
-    #toggleButton {
-      display: none;
-      background: transparent;
-      border: 1px solid #00eaff;
-      color: #00eaff;
-      padding: 10px 20px;
-      font-family: inherit;
-      margin: 0 auto 20px;
-      display: block;
-      text-align: center;
-      cursor: pointer;
-      border-radius: 6px;
-    }
+	#toggleButton {
+	  display: none; /* hide by default */
+	  background: transparent;
+	  border: 1px solid #00eaff;
+	  color: #00eaff;
+	  padding: 10px 20px;
+	  font-family: inherit;
+	  margin: 0 auto 20px;
+	  text-align: center;
+	  cursor: pointer;
+	  border-radius: 6px;
+	}
 
     pre {
       background-color: #0d1b2a;
@@ -63,19 +62,19 @@
       background-color: rgba(0, 234, 255, 0.2) !important;
     }
 
-    @media (max-width: 768px) {
-      #toggleButton {
-        display: block;
-      }
+	@media (max-width: 768px) {
+	  #toggleButton {
+		display: block;
+	  }
 
-      pre {
-        display: none;
-      }
+	  pre {
+		display: none;
+	  }
 
-      pre.expanded {
-        display: block;
-      }
-    }
+	  pre.expanded {
+		display: block;
+	  }
+	}
   </style>
 </head>
 <body>
@@ -84,7 +83,7 @@
   <pre id="httpOutput">Initializing network diagnostics...</pre>
 
   <script>
-    function typeLine(text, elementId, delay = 20) {
+    function typeLine(text, elementId, delay = 10) {
       const el = document.getElementById(elementId);
       el.textContent = '';
       let i = 0;
@@ -146,7 +145,7 @@ user-agent: ${userAgent}`;
 	  // Start collapsed on small screens
 	  if (window.innerWidth <= 768) {
 		pre.classList.remove('expanded');
-		toggleBtn.textContent = 'Show Headers';
+		toggleBtn.textContent = 'Header Info';
 	  }
 
 	  toggleBtn.addEventListener('click', () => {
