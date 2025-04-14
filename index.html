@@ -23,18 +23,18 @@
       text-shadow: 0 0 8px #33ccff;
     }
 
-    #toggleButton {
-      display: none; /* hide by default */
-      background: transparent;
-      border: 1px solid #00eaff;
-      color: #00eaff;
-      padding: 10px 20px;
-      font-family: inherit;
-      margin: 0 auto 20px;
-      text-align: center;
-      cursor: pointer;
-      border-radius: 6px;
-    }
+	#toggleButton {
+	  display: none; /* hide by default */
+	  background: transparent;
+	  border: 1px solid #00eaff;
+	  color: #00eaff;
+	  padding: 10px 20px;
+	  font-family: inherit;
+	  margin: 0 auto 20px;
+	  text-align: center;
+	  cursor: pointer;
+	  border-radius: 6px;
+	}
 
     pre {
       background-color: #0d1b2a;
@@ -50,7 +50,8 @@
     }
 
     .line {
-      display: block;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
     }
 
     .line:hover {
@@ -61,29 +62,30 @@
       background-color: rgba(0, 234, 255, 0.2) !important;
     }
 
-    @media (max-width: 768px) {
-      #toggleButton {
-        display: block;
-      }
+	@media (max-width: 768px) {
+	  #toggleButton {
+		display: block;
+	  }
 
-      pre {
-        display: none;
-      }
+	  pre {
+		display: none;
+	  }
 
-      pre.expanded {
-        display: block;
-      }
-    }
+	  pre.expanded {
+		display: block;
+	  }
+	}
+	
+	#toggleButton .caret {
+	  display: inline-block;
+	  transition: transform 0.2s ease;
+	  margin-right: 8px;
+	}
 
-    #toggleButton .caret {
-      display: inline-block;
-      transition: transform 0.2s ease;
-      margin-right: 8px;
-    }
+	#toggleButton.expanded .caret {
+	  transform: rotate(90deg);
+	}
 
-    #toggleButton.expanded .caret {
-      transform: rotate(90deg);
-    }
   </style>
 </head>
 <body>
@@ -92,85 +94,82 @@
   <pre id="httpOutput">Initializing network diagnostics...</pre>
 
   <script>
-	function typeLine(text, elementId, delay = 10) {
-	  const el = document.getElementById(elementId);
-	  el.textContent = '';
-	  let i = 0;
-	  let typed = ''; // buffer string
-
-	  const interval = setInterval(() => {
-		if (i < text.length) {
-		  typed += text[i++];
-		  el.textContent = typed; // assign entire string each frame
-		} else {
-		  clearInterval(interval);
-		  wrapLines(el); // post-animation tap-to-copy
-		}
-	  }, delay);
-	}
-
-    function wrapLines(el) {
-      const lines = el.textContent.split('\n');
-      el.innerHTML = lines.map(line => `<span class="line">${line}</span>\n`).join('');
-      el.classList.add('expanded');
-      document.querySelectorAll('.line').forEach(lineEl => {
-        lineEl.addEventListener('click', () => {
-          const parts = lineEl.textContent.split(/:(.+)/);
-          const value = parts.length > 1 ? parts[1].trim() : lineEl.textContent;
-          navigator.clipboard.writeText(value);
-          lineEl.classList.add('copied');
-          setTimeout(() => lineEl.classList.remove('copied'), 600);
-        });
-      });
+    function typeLine(text, elementId, delay = 10) {
+      const el = document.getElementById(elementId);
+      el.textContent = '';
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          el.textContent += text[i++];
+        } else {
+          clearInterval(interval);
+          wrapLines(el); // Add tap-to-copy after typing ends
+        }
+      }, delay);
     }
+
+	function wrapLines(el) {
+	  const lines = el.textContent.split('\n');
+	  el.innerHTML = lines.map(line => `<div class="line">${line}</div>`).join('');
+	  // el.classList.add('expanded');
+	  document.querySelectorAll('.line').forEach(lineEl => {
+		lineEl.addEventListener('click', () => {
+		  const parts = lineEl.textContent.split(/:(.+)/); // splits only on first colon
+		  const value = parts.length > 1 ? parts[1].trim() : lineEl.textContent;
+		  navigator.clipboard.writeText(value);
+		  lineEl.classList.add('copied');
+		  setTimeout(() => lineEl.classList.remove('copied'), 600);
+		});
+	  });
+	}
 
     function renderHeaders() {
       const now = new Date();
       const dateStr = now.toUTCString();
-      const expiresStr = new Date(now.getTime() + 10 * 60 * 1000).toUTCString(); // +10 minutes
+      const expiresStr = new Date(now.getTime() + 600).toUTCString(); // +10 mins
       const userAgent = navigator.userAgent;
       const language = navigator.language;
 
-      const simulatedHeaders = [
-        `Request URL: ${window.location.href}`,
-        `Request Method: GET`,
-        `Status Code: 200 OK`,
-        `Referrer Policy: strict-origin-when-cross-origin`,
-        '',
-        `cache-control: max-age=600`,
-        `date: ${dateStr}`,
-        `expires: ${expiresStr}`,
-        `vary: Accept-Encoding`,
-        `x-cache: HIT`,
-        '',
-        `accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8`,
-        `accept-encoding: gzip, deflate, br`,
-        `accept-language: ${language}`,
-        `user-agent: ${userAgent}`
-      ].join('\n');
+      const simulatedHeaders = `Request URL: ${window.location.href}
+Request Method: GET
+Status Code: 200 OK
+Referrer Policy: strict-origin-when-cross-origin
+
+cache-control: max-age=600
+date: ${dateStr}
+expires: ${expiresStr}
+vary: Accept-Encoding
+x-cache: HIT
+
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+accept-encoding: gzip, deflate, br
+accept-language: ${language}
+user-agent: ${userAgent}`;
 
       typeLine(simulatedHeaders, 'httpOutput');
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const pre = document.getElementById('httpOutput');
-      const toggleBtn = document.getElementById('toggleButton');
+	window.addEventListener('DOMContentLoaded', () => {
+	  const pre = document.getElementById('httpOutput');
+	  const toggleBtn = document.getElementById('toggleButton');
 
-      // Start collapsed on small screens
-      if (window.innerWidth <= 768) {
-        pre.classList.remove('expanded');
-        toggleBtn.classList.remove('expanded');
-        toggleBtn.querySelector('.label').textContent = 'Show Headers';
-      }
+	  // Start collapsed on small screens
+	  if (window.innerWidth <= 768) {
+		pre.classList.remove('expanded');
+		toggleBtn.textContent = 'Header Info';
+	  }
 
-      toggleBtn.addEventListener('click', () => {
-        const expanded = pre.classList.toggle('expanded');
-        toggleBtn.classList.toggle('expanded', expanded);
-        toggleBtn.querySelector('.label').textContent = expanded ? 'Hide Headers' : 'Show Headers';
-      });
+	toggleBtn.addEventListener('click', () => {
+	  const expanded = pre.classList.toggle('expanded');
+	  toggleBtn.classList.toggle('expanded', expanded); // <-- added line
 
-      renderHeaders();
-    });
+	  const label = toggleBtn.querySelector('.label');
+	  label.textContent = expanded ? 'Hide Headers' : 'Show Headers';
+	});
+
+	  renderHeaders();
+	});
+
   </script>
 </body>
 </html>
