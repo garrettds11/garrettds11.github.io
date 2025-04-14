@@ -149,31 +149,35 @@ user-agent: ${userAgent}`;
       typeLine(simulatedHeaders, 'httpOutput');
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const pre = document.getElementById('httpOutput');
-      const toggleBtn = document.getElementById('toggleButton');
-      const sound = document.getElementById('toggleSound');
+	window.addEventListener('DOMContentLoaded', () => {
+	  const pre = document.getElementById('httpOutput');
+	  const toggleBtn = document.getElementById('toggleButton');
+	  const sound = document.getElementById('toggleSound');
 
-      if (window.innerWidth <= 768) {
-        pre.classList.remove('expanded');
-        toggleBtn.textContent = 'Header Info';
-      }
+	  // Start collapsed on small screens
+	  if (window.innerWidth <= 768) {
+		pre.classList.remove('expanded');
+		toggleBtn.classList.remove('expanded');
+		const label = toggleBtn.querySelector('.label');
+		if (label) label.textContent = 'Show Headers';
+	  }
 
-      toggleBtn.addEventListener('click', () => {
-        const expanded = pre.classList.toggle('expanded');
-        toggleBtn.classList.toggle('expanded', expanded);
-        const label = toggleBtn.querySelector('.label');
-        label.textContent = expanded ? 'Hide Headers' : 'Show Headers';
+	  toggleBtn.addEventListener('click', () => {
+		const expanded = pre.classList.toggle('expanded');
+		toggleBtn.classList.toggle('expanded', expanded);
+		const label = toggleBtn.querySelector('.label');
+		if (label) label.textContent = expanded ? 'Hide Headers' : 'Show Headers';
 
-        // 🔊 Play sound on click
-        if (sound) {
-          sound.currentTime = 0;
-          sound.play().catch(() => {});
-        }
-      });
+		// 🔊 Play sound on click
+		if (sound) {
+		  sound.currentTime = 0;
+		  sound.play().catch(() => {});
+		}
+	  });
 
-      renderHeaders();
-    });
+	  renderHeaders();
+	});
+
   </script>
 </body>
 </html>
