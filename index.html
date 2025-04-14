@@ -63,7 +63,7 @@
 	function renderHeaders() {
 	  const now = new Date();
 	  const dateStr = now.toUTCString();
-	  const expiresStr = new Date(now.getTime() + 600000).toUTCString(); // 10 mins later
+	  const expiresStr = new Date(now.getTime() + 600).toUTCString(); // 10 mins later
 	  const userAgent = navigator.userAgent;
 	  const language = navigator.language;
 
