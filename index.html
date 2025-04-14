@@ -27,7 +27,9 @@
       padding: 25px;
       border-left: 5px solid #00eaff;
       border-radius: 6px;
-      white-space: pre-wrap;
+      white-space: pre-wrap;       /* allow wrapping */
+	  word-wrap: break-word;       /* break long words if needed */
+	  overflow-wrap: break-word;   /* ensure compatibility */
       box-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
       min-height: 300px;
     }
