@@ -68,6 +68,7 @@
 
       pre {
         display: none;
+		line-height: 1.4;
       }
 
       pre.expanded {
@@ -146,6 +147,17 @@
 		`accept-language: ${language}`,
 		`user-agent: ${userAgent}`
 	  ].join('\n');
+	  const cleanedText = simulatedHeaders
+		.split('\n')
+		.map(line => line.trim())
+		.filter(line => line.length > 0)
+		.join('\n');
+
+	  const lines = el.textContent.split('\n').filter(line => line.trim().length > 0);
+
+	  typeLine(cleanedText, 'httpOutput');
+	}
+
 
 
     window.addEventListener('DOMContentLoaded', () => {
