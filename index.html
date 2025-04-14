@@ -98,17 +98,19 @@
       }, delay);
     }
 
-    function wrapLines(el) {
-      const lines = el.textContent.split('\n');
-      el.innerHTML = lines.map(line => `<div class="line">${line}</div>`).join('');
-      document.querySelectorAll('.line').forEach(lineEl => {
-        lineEl.addEventListener('click', () => {
-          navigator.clipboard.writeText(lineEl.textContent);
-          lineEl.classList.add('copied');
-          setTimeout(() => lineEl.classList.remove('copied'), 600);
-        });
-      });
-    }
+	function wrapLines(el) {
+	  const lines = el.textContent.split('\n');
+	  el.innerHTML = lines.map(line => `<div class="line">${line}</div>`).join('');
+	  document.querySelectorAll('.line').forEach(lineEl => {
+		lineEl.addEventListener('click', () => {
+		  const parts = lineEl.textContent.split(/:(.+)/); // splits only on first colon
+		  const value = parts.length > 1 ? parts[1].trim() : lineEl.textContent;
+		  navigator.clipboard.writeText(value);
+		  lineEl.classList.add('copied');
+		  setTimeout(() => lineEl.classList.remove('copied'), 600);
+		});
+	  });
+	}
 
     function renderHeaders() {
       const now = new Date();
