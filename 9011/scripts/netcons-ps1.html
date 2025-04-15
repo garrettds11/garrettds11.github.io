@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PowerShell Script</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      background-color: #2d2d2d;
+      color: #ccc;
+      padding: 2em;
+    }
+    pre {
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 1em;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h1>NetCons.ps1</h1>
+<p>This powerShell script correlates TCP connections with process IDs and writes the output of to a file.</p>
+
+<pre><code class="language-powershell">
+# Define CSV output path
+$outputPath = "%HOMEPATH%\Folder..\netconsps1.csv"
+
+# Get current timestamp
+$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+# Function to retrieve process path
+function Get-ProcessPath {
+    param (
+        [int]$ProcessId
+    )
+    $process = Get-Process -Id $ProcessId -ErrorAction SilentlyContinue
+    if ($process) {
+        try {
+            $exePath = (Get-WmiObject Win32_Process -Filter "ProcessId=$ProcessId").ExecutablePath
+            if ($exePath -eq $null) {
+                return "N/A"
+            } else {
+                return $exePath
+            }
+        } catch {
+            return "N/A"
+        }
+    } else {
+        return "N/A"
+    }
+}
+
+# Get TCP connections
+$tcpConnections = Get-NetTCPConnection | ForEach-Object {
+    [PSCustomObject]@{
+        Timestamp     = $timestamp
+        Protocol      = "TCP"
+        LocalAddress  = $_.LocalAddress
+        LocalPort     = $_.LocalPort
+        RemoteAddress = $_.RemoteAddress
+        RemotePort    = $_.RemotePort
+        State         = $_.State
+        PID           = $_.OwningProcess
+        ProcessPath   = (Get-ProcessPath -ProcessId $_.OwningProcess)
+    }
+}
+
+# Get UDP listeners
+$udpListeners = Get-NetUDPEndpoint | Where-Object { $_.State -eq "Listen" } | ForEach-Object {
+    [PSCustomObject]@{
+        Timestamp     = $timestamp
+        Protocol      = "UDP"
+        LocalAddress  = $_.LocalAddress
+        LocalPort     = $_.LocalPort
+        RemoteAddress = ""
+        RemotePort    = ""
+        State         = "Listen"
+        PID           = $_.OwningProcess
+        ProcessPath   = "N/A"
+    }
+}
+
+# Combine TCP and UDP data
+$allConnections = $tcpConnections + $udpListeners
+
+# Export to CSV
+$allConnections | Select-Object Timestamp, Protocol, LocalAddress, LocalPort, RemoteAddress, RemotePort, State, PID, ProcessPath | Export-Csv -Path $outputPath -NoTypeInformation
+
+# Display confirmation message
+Write-Host "Netstat data exported to: $outputPath"
+</code></pre>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
+
+</body>
+</html>
