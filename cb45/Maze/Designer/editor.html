@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Maze Editor</title>
+  <style>
+    canvas { border: 2px solid black; display: block; margin: 20px auto; }
+    button { display: block; margin: 10px auto; }
+    pre { white-space: pre-wrap; text-align: center; font-family: monospace; }
+  </style>
+</head>
+<body>
+
+<button onclick="exportMaze()">Export Maze Array</button>
+<button onclick="resetMaze()">Reset Grid</button>
+<p style="text-align: center;">Hold <strong>Shift</strong> and move your mouse to draw paths.</p>
+<canvas id="editorCanvas" width="600" height="600"></canvas>
+<pre id="output"></pre>
+
+<script>
+const cols = 20;
+const rows = 20;
+const cellSize = 30;
+const canvas = document.getElementById('editorCanvas');
+const ctx = canvas.getContext('2d');
+let maze = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+let lastHovered = { x: -1, y: -1 };
+
+function drawGrid() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      ctx.fillStyle = maze[y][x] ? "#fff" : "#000";
+      ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+      ctx.strokeStyle = "#ccc";
+      ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    }
+  }
+}
+
+canvas.addEventListener("mousemove", (e) => {
+  if (!e.shiftKey) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.floor((e.clientX - rect.left) / cellSize);
+  const y = Math.floor((e.clientY - rect.top) / cellSize);
+
+  if (
+    x >= 0 && x < cols &&
+    y >= 0 && y < rows &&
+    (x !== lastHovered.x || y !== lastHovered.y)
+  ) {
+    maze[y][x] = maze[y][x] ? 0 : 1;
+    lastHovered = { x, y };
+    drawGrid();
+  }
+});
+
+canvas.addEventListener("mouseleave", () => {
+  lastHovered = { x: -1, y: -1 };
+});
+
+function exportMaze() {
+  const output = document.getElementById("output");
+  const arrayText = "const maze = [\n" +
+    maze.map((row, rowIndex) => "  [" + row.join(",") + `]${rowIndex < rows - 1 ? "," : ""} //${rowIndex}`).join("\n") +
+    "\n];";
+  output.textContent = arrayText;
+}
+
+function resetMaze() {
+  maze = Array.from({ length: rows }, () => Array(cols).fill(0));
+  drawGrid();
+  document.getElementById("output").textContent = "";
+}
+
+drawGrid();
+</script>
+
+</body>
+</html>

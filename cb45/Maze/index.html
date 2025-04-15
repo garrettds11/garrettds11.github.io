@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maze Game</title>
+  <style>
+    body {
+      background: #000;
+	  color: white;
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #position {
+      font-size: 18px;
+      margin-top: 100px;
+      margin-bottom: 10px;
+    }
+    canvas {
+      background: #fff;
+      border: 2px solid blue;
+      display: block;
+      margin: 0 auto;
+    }
+    button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<pre style="text-align: center; 
+			font-family: monospace; 
+			font-size: 12px; 
+			line-height: 1.1em; 
+			margin-bottom: 40px;">
+			
+TTTTTTTTT   HHH   HHH   EEE EEEEE          MM     MM    AAAAA    ZZZZZZZZZ  EEE EEEEE
+   TTT      HHH   HHH   EEE                MMM   MMM   AA   AA        ZZZ   EEE      
+   TTT      HHH HHHHH   EEEEEEE            MMM MMMMM  AAA AAAAA     ZZZ     EEEEEEE  
+   TTT      HHH   HHH   EEE                MMM M MMM  AAA   AAA   ZZZ       EEE      
+   TTT      HHH   HHH   EEE EEEEE          MMM   MMM  AAA   AAA  ZZZZZZZZZ  EEE EEEEE
+</pre>
+
+  <div id="position">Player Position: (0, 0)</div><p/>
+  <canvas id="mazeCanvas" width="600" height="600"></canvas><p/>
+  <button onclick="resetMaze()">Restart Maze</button><p/>
+
+  <script src="maze.js"></script>
+</body>
+</html>
