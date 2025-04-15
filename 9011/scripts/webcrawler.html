@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PowerShell Script</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      background-color: #2d2d2d;
+      color: #ccc;
+      padding: 2em;
+    }
+    pre {
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 1em;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h1>WebCrawler.ps1</h1>
+<p>This powerShell script reads strings from an input file and writes a file output to a new or existing path.</p>
+
+<pre><code class="language-powershell">
+param (
+    [string]$inputFilePath
+)
+
+# Read the URLs from the input file
+$urls = Get-Content -Path $inputFilePath
+
+# Directory to save JSON files
+$outputDirectory = "%HOMEPATH%\folder.."
+
+# Create output directory if it doesn't exist
+if (-not (Test-Path -Path $outputDirectory)) {
+    New-Item -ItemType Directory -Path $outputDirectory | Out-Null
+}
+
+# Loop through each URL
+foreach ($url in $urls) {
+    try {
+        # Encode the URL
+        $encodedUrl = [System.Uri]::EscapeUriString($url)
+        
+        # Retrieve JSON data from encoded URL
+        $jsonData = Invoke-RestMethod -Uri $encodedUrl -Method Get -ContentType "application/json"
+
+        # Extract the segment just before the end of the URL path
+        $fileNameSegment = ($url -split '/|\\')[-2]
+
+        # Extract filename from URL
+        $fileName = [System.IO.Path]::GetFileNameWithoutExtension($url) + "_$fileNameSegment.json"
+        
+        # Construct full path for output file
+        $outputFile = Join-Path -Path $outputDirectory -ChildPath $fileName
+
+        # Save JSON data to file
+        $jsonData | ConvertTo-Json -Depth 10 | Set-Content -Path $outputFile -Encoding UTF8
+
+        Write-Host "Saved JSON data from $url to $outputFile"
+    }
+    catch {
+        Write-Host "Error occurred while processing ${url}: $_"
+    }
+}
+
+</code></pre>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
+
+</body>
+</html>
