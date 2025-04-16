@@ -1,0 +1,99 @@
+{
+  "url": "https://www.splunk.com/en_us/blog/author/secmrkt-research.html",
+  "title": "Splunk Threat Research Team 's Blog Posts | Splunk",
+  "author": "",
+  "description": "",
+  "updated": "",
+  "posts": [
+    {
+      "title": "Sinister SQL Queries and How to Catch Them",
+      "url": "",
+      "content": "Sinister SQL Queries and How to Catch Them"
+    },
+    {
+      "title": "Infostealer Campaign against ISPs",
+      "url": "",
+      "content": "Infostealer Campaign against ISPs"
+    },
+    {
+      "title": "Splunk Security Content for Threat Detection & Response: February 2025 Update",
+      "url": "",
+      "content": "Splunk Security Content for Threat Detection & Response: February 2025 Update"
+    },
+    {
+      "title": "Now Available: Splunk Enterprise Security Content Update App 5.0",
+      "url": "",
+      "content": "Now Available: Splunk Enterprise Security Content Update App 5.0"
+    },
+    {
+      "title": "Meduza Stealer Analysis: A Closer Look at its Techniques and Attack Vector",
+      "url": "",
+      "content": "Meduza Stealer Analysis: A Closer Look at its Techniques and Attack Vector"
+    },
+    {
+      "title": "Bypassing the Bypass: Detecting Okta Classic Application Sign-On Policy Evasion",
+      "url": "",
+      "content": "Bypassing the Bypass: Detecting Okta Classic Application Sign-On Policy Evasion"
+    },
+    {
+      "title": "CosmicSting: A Critical XXE Vulnerability in Adobe Commerce and Magento (CVE-2024-34102)",
+      "url": "",
+      "content": "CosmicSting: A Critical XXE Vulnerability in Adobe Commerce and Magento (CVE-2024-34102)"
+    },
+    {
+      "title": "Cracking Braodo Stealer: Analyzing Python Malware and Its Obfuscated Loader",
+      "url": "",
+      "content": "Cracking Braodo Stealer: Analyzing Python Malware and Its Obfuscated Loader"
+    },
+    {
+      "title": "ValleyRAT Insights: Tactics, Techniques, and Detection Methods",
+      "url": "",
+      "content": "ValleyRAT Insights: Tactics, Techniques, and Detection Methods"
+    },
+    {
+      "title": "Introducing Splunk Attack Range v3.1",
+      "url": "",
+      "content": "Introducing Splunk Attack Range v3.1"
+    },
+    {
+      "title": "PowerShell Web Access: Your Network's Backdoor in Plain Sight",
+      "url": "",
+      "content": "PowerShell Web Access: Your Network's Backdoor in Plain Sight"
+    },
+    {
+      "title": "My CUPS Runneth Over (with CVEs)",
+      "url": "",
+      "content": "My CUPS Runneth Over (with CVEs)"
+    },
+    {
+      "title": "Handala’s Wiper: Threat Analysis and Detections",
+      "url": "",
+      "content": "Handala’s Wiper: Threat Analysis and Detections"
+    },
+    {
+      "title": "ShrinkLocker Malware: Abusing BitLocker to Lock Your Data",
+      "url": "",
+      "content": "ShrinkLocker Malware: Abusing BitLocker to Lock Your Data"
+    },
+    {
+      "title": "The Final Shell: Introducing ShellSweepX",
+      "url": "",
+      "content": "The Final Shell: Introducing ShellSweepX"
+    },
+    {
+      "title": "Previous Security Content Roundups from the Splunk Threat Research Team (STRT)",
+      "url": "",
+      "content": "Previous Security Content Roundups from the Splunk Threat Research Team (STRT)"
+    },
+    {
+      "title": "AcidPour Wiper Malware: Threat Analysis and Detections",
+      "url": "",
+      "content": "AcidPour Wiper Malware: Threat Analysis and Detections"
+    },
+    {
+      "title": "Splunk Security Content for Impact Assessment of CrowdStrike Windows Outage",
+      "url": "",
+      "content": "Splunk Security Content for Impact Assessment of CrowdStrike Windows Outage"
+    }
+  ]
+}
