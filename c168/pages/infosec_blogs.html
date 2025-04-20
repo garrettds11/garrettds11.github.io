@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>InfoSec Blogs</title>
+  <style>
+    body {
+      font-family: 'system-ui';
+      margin: 0;
+      padding: 0;           /* we’ll handle top padding below */
+      min-width: 620px;
+      /* BACKGROUND */
+      background-image:      /* first the black overlay… */
+        linear-gradient(
+        rgba(0,0,0,0.7),   /* start & end color (20% transparent black) */
+        rgba(0,0,0,0.7)),
+        url('https://garrettspearinfo.wordpress.com/wp-content/uploads/2025/04/macrovector_on_freepik.jpg'); 
+      background-size: auto, 100vw 100vh;       /* fill the viewport */
+      background-repeat: no-repeat;
+      background-attachment: scroll, fixed;
+    }
+
+    .fixed-header {
+      box-sizing: border-box;
+      text-align: center;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 8.5em;
+      background: black;
+      color: white;
+      border-bottom: 2px solid white;
+      z-index: 1000;
+      padding: 0.5em 0;
+    }
+
+    .fixed-header h2{
+      /*font-family: "Courier New", Consolas, "Lucida Console", "Courier";*/
+    }
+
+    .fixed-header .flex-header {
+      display: flex;
+      gap: 2em;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .fixed-header .flex-header > h1 {
+      flex: 1;
+      text-align: center;
+      margin: 0;
+    }
+
+    /* original header styling */
+    .flex-header {
+      display: flex;
+      text-align: center;
+      gap: 2em;
+      margin: auto;         /* margins now live inside the fixed container */
+      font-family: "Courier New", Consolas, "Lucida Console", "Courier";
+    }
+    .header-col-1 {
+        width: 50%; 
+    }
+    .header-col-2 {
+        width: 50%; 
+    }
+
+    /* new: wrap both header’s flex and the row */
+    .content {
+      max-width: 800px;     /* or whatever total width you like */
+      margin: 0 auto;        /* center it in the viewport */
+      padding: 0 4em;        /* keep your 4em “gutters” */
+      position: relative;    /* for safety, if you ever add overlays */
+      overflow: auto;        /* or scroll, whichever you prefer */
+    }
+
+    /* push the rest of the content below the fixed header */
+    .flex-row {
+      display: flex;
+      gap: 2em;
+      padding: 160px 0 50px 0;      /* adjust to match the height of .fixed-header */
+      color: white;
+    }
+    .col-1 {
+        flex: 1;
+        width: 50%;
+        min-width: 0;
+        word-break: break-all;
+        color: white;
+    }
+    .col-2 {
+        flex: 1;
+        width: 50%;
+        min-width: 0;
+        word-break: break-all;
+        color: white;
+    }
+    .col-1 h4 {
+        padding: 2.2em 0 0 0;
+        margin: 0;
+    }
+    .col-2 h4 {
+        padding: 2.2em 0 0 0;
+        margin: 0;
+    }
+    /* target your content columns explicitly */
+    .flex-row .col-1 a,
+    .flex-row .col-2 a,
+    .flex-row .col-1 a:visited,
+    .flex-row .col-2 a:visited,
+    .flex-row .col-1 a:active,
+    .flex-row .col-2 a:active {
+      color: #4fbafc;
+      text-shadow:  1px 1px 2px rgb(124, 240, 254);
+      font-family: "Courier New", Consolas, "Lucida Console", "Courier";
+      /* actual text blur: */
+      filter:       blur(1px);
+      -webkit-filter: blur(1px); /* for Safari */
+      transition:   filter 0.2s ease, color 0.2s ease;
+    }
+
+    .flex-row .col-1 a:hover,
+    .flex-row .col-2 a:hover {
+      color: rgb(191, 137, 162);
+      text-shadow:  2px 2px 2px rgb(245, 76, 89);
+      filter:       blur(0);
+      -webkit-filter: blur(0);
+    }
+    
+    footer {
+        box-sizing: border-box;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        text-align: center;
+        padding: 0.4em 0;
+        font-size: 0.7em;
+        z-index: 1000; 
+        position: fixed;
+        unicode-bidi: isolate; 
+        margin: 0; 
+    }
+    /* target your content columns explicitly */
+    footer a,
+    footer a:visited,
+    footer a:hover,
+    footer a:active {
+    color: white;
+    }
+
+    /* define these once so you can tweak heights in one place */
+    :root {
+    --header-height: 8.5em;   /* total height of .fixed-header (padding + line‑height) */
+    --footer-height: 0em;   /* total height of your footer */
+    --fade-height: 5em;       /* how “deep” the fade zone is */
+    }
+
+    /* put fades between header/footer and the body content */
+    body::before,
+    body::after {
+    content: "";
+    position: fixed;
+    left: 0; right: 0;
+    pointer-events: none;
+    z-index: 999;             /* just under header (1000), above content */
+    }
+
+    /* top fade: text scrolling *up* under the header’s bottom edge */
+    body::before {
+    top: var(--header-height);
+    height: var(--fade-height);
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,0) 100%
+    );
+    }
+
+    /* bottom fade: text scrolling *down* under the footer’s top edge */
+    body::after {
+    bottom: var(--footer-height);
+    height: var(--fade-height);
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,0)   100%
+    );
+    }
+
+  </style>
+    </head>
+    <body>
+      <div class="fixed-header">
+        <h2>InfoSec Blogs</h2>
+        <header class="flex-header">
+          <h1 class="header-col-1">Security</h1>
+          <h1 class="header-col-2">Vulns & Exploits</h1>
+        </header>
+      </div>
+      <div class="content">
+        <container class="flex-row">
+          <container class="col-1">
+              <h4>X-Force Research – Security Intelligence</h4><a class="code-wrapper" href="http://securityintelligence.com/topics/x-force/feed/" >securityintelligence.com</a>
+              <h4>SecurityIntelligence</h4><a class="code-wrapper" href="http://securityint.blogspot.com/feeds/posts/default" >securityint.blogspot.com/</a>
+              <h4>Tails - News</h4><a class="code-wrapper" href="https://tails.boum.org/news/index.en.rss" >tails.boum.org/news/index.en.html</a>
+              <h4>SEKURITY Blog | Hacking News, To...</h4><a class="code-wrapper" href="http://sekurity.tumblr.com/rss" >sekurity.tumblr.com/</a>
+              <h4>Google Online Security Blog</h4><a class="code-wrapper" href="http://googleonlinesecurity.blogspot.com/feeds/posts/default" >security.googleblog.com/</a>
+              <h4>Jeremiah Grossman</h4><a class="code-wrapper" href="http://feeds2.feedburner.com/JeremiahGrossman" >blog.jeremiahgrossman.com/</a>
+              <h4>mossmann's blog</h4><a class="code-wrapper" href="http://ossmann.blogspot.com/feeds/posts/default" >ossmann.blogspot.com/</a>
+              <h4>Sucuri Blog</h4><a class="code-wrapper" href="http://blog.sucuri.net/feed" >blog.sucuri.net</a>
+              <h4>Zone-H.org News</h4><a class="code-wrapper" href="http://zone-h.org/rss/news" >www.zone-h.org/rss/news</a>
+              <h4>Binary's blog</h4><a class="code-wrapper" href="http://binaryhax0r.blogspot.com/feeds/posts/default" >binaryhax0r.blogspot.com/</a>
+              <h4>Research Blog</h4><a class="code-wrapper" href="http://research.zscaler.com/feeds/posts/default" >www.zscaler.com/</a>
+              <h4>rdist</h4><a class="code-wrapper" href="http://rdist.root.org/feed/" >rdist.root.org</a>
+              <h4>SANS Digital Forensics and Incident Response Blog</h4><a class="code-wrapper" href="https://blogs.sans.org/computer-forensics/feed/" >digital-forensics.sans.org/blog</a>
+              <h4>Danger Room</h4><a class="code-wrapper" href="http://www.wired.com/dangerroom/feed/" >www.wired.com</a>
+              <h4>WIRED</h4><a class="code-wrapper" href="http://www.wired.com/threatlevel/feed/" >www.wired.com</a>
+              <h4>Blog | enSilo</h4><a class="code-wrapper" href="https://blog.ensilo.com/rss.xml" >blog.ensilo.com</a>
+              <h4>John Melton's Weblog</h4><a class="code-wrapper" href="http://feeds.feedburner.com/jtmelton" >www.jtmelton.com</a>
+              <h4>Computer Forensics</h4><a class="code-wrapper" href="http://www.reddit.com/r/computerforensics/.rss" >www.reddit.com/r/computerforensics/</a>
+              <h4>Neohapsis Labs</h4><a class="code-wrapper" href="http://labs.neohapsis.com/feed/" >labs.neohapsis.com</a>
+              <h4>Updates from the Tor Project</h4><a class="code-wrapper" href="https://blog.torproject.org/blog/feed" >blog.torproject.org/blog/feed</a>
+              <h4>Alpha One Labs</h4><a class="code-wrapper" href="http://blog.alphaonelabs.com/rss" >blog.alphaonelabs.com/</a>
+              <h4>Room362.com RSS Feed</h4><a class="code-wrapper" href="http://feeds.feedburner.com/Room362com" >room362.com/</a>
+              <h4>Cloud Security</h4><a class="code-wrapper" href="http://feeds.feedburner.com/CloudSecurity" >cloudsecurity.org/</a>
+              <h4>TrustedSec</h4><a class="code-wrapper" href="https://www.trustedsec.com/feed/" >www.trustedsec.com</a>
+              <h4>ToolsWatch.org</h4><a class="code-wrapper" href="http://www.toolswatch.org/feed/" >www.toolswatch.org</a>
+              <h4>Security Awareness Blog</h4><a class="code-wrapper" href="http://www.securingthehuman.org/blog/feed/" >securingthehuman.sans.org/blog</a>
+              <h4>LINUX DIGEST</h4><a class="code-wrapper" href="http://sathisharthars.wordpress.com/feed/" >sathisharthars.com</a>
+              <h4>Computer Security Is My Interest!</h4><a class="code-wrapper" href="http://soroush.secproject.com/blog/feed/" >soroush.secproject.com/blog</a>
+              <h4>Open Web Application Security Project</h4><a class="code-wrapper" href="http://owasp.blogspot.com/feeds/posts/default" >owasp.blogspot.com/</a>
+              <h4>Computer Forensics, Malware Analysis &amp; Digital Investigations</h4><a class="code-wrapper" href="http://www.forensickb.com/feeds/posts/default" >www.forensickb.com/</a>
+              <h4>Malware don't need Coffee</h4><a class="code-wrapper" href="http://malware.dontneedcoffee.com/feeds/posts/default" >malware.dontneedcoffee.com/</a>
+              <h4>Myne-us</h4><a class="code-wrapper" href="http://myne-us.blogspot.com/feeds/posts/default" >www.myne-us.com/</a>
+              <h4>#_shellntel</h4><a class="code-wrapper" href="http://www.shellntel.com/blog?format=RSS" >www.shellntel.com/</a>
+              <h4>M86 Security Labs Blog</h4><a class="code-wrapper" href="http://www.marshal.com/rss/trace.asp" >www.Trustwave.com/spiderlabs/</a>
+              <h4>The Honeynet Project blogs</h4><a class="code-wrapper" href="http://www.honeynet.org/blog/feed" >www.honeynet.org/blog</a>
+              <h4>Network Security Blog</h4><a class="code-wrapper" href="http://www.mckeay.net/feed/" >www.mckeay.net</a>
+              <h4>Errata Security</h4><a class="code-wrapper" href="http://erratasec.blogspot.com/feeds/posts/default" >blog.erratasec.com/</a>
+              <h4>Talos Blog</h4><a class="code-wrapper" href="http://vrt-sourcefire.blogspot.com/feeds/posts/default" >blog.talosintelligence.com/</a>
+              <h4>SpiderLabs Blog from Trustwave</h4><a class="code-wrapper" href="http://feeds.feedburner.com/SpiderlabsAnterior" >www.trustwave.com/rss.aspx?type=slblog</a>
+              <h4>The Shadowserver Foundation</h4><a class="code-wrapper" href="http://blog.shadowserver.org/feed/" >blog.shadowserver.org</a>
+              <h4>Dancho Danchev's Blog - Mind Streams of Information Security Knowledge</h4><a class="code-wrapper" href="http://ddanchev.blogspot.com/feeds/posts/default" >ddanchev.blogspot.com/</a>
+              <h4>Defrag This - Ipswitch</h4><a class="code-wrapper" href="http://www.whatsupgold.com/blog/feed/" >blog.ipswitch.com</a>
+              <h4>Krebs on Security</h4><a class="code-wrapper" href="http://krebsonsecurity.com/feed/" >krebsonsecurity.com</a>
+              <h4>Kaspersky Lab official blog</h4><a class="code-wrapper" href="http://blog.kaspersky.com/feed/" >www.kaspersky.com/blog</a>
+              <h4>Push the Red Button</h4><a class="code-wrapper" href="http://moyix.blogspot.com/feeds/posts/default" >moyix.blogspot.com/</a>
+              <h4>Alertsec Security Blog</h4><a class="code-wrapper" href="http://blog.alertsec.com/feed/" >blog.alertsec.com</a>
+              <h4>Bromium</h4><a class="code-wrapper" href="http://labs.bromium.com/feed/" >blogs.bromium.com</a>
+              <h4>Security to the Core | Arbor Networks Security » 2011</h4><a class="code-wrapper" href="http://feeds2.feedburner.com/asert/" >asert.arbornetworks.com</a>
+              <h4>Malware Disasters Team</h4><a class="code-wrapper" href="http://malwaredisasters.blogspot.com/feeds/posts/default" >malwaredisasters.blogspot.com/</a>
+              <h4>Snort Blog</h4><a class="code-wrapper" href="http://feeds.feedburner.com/Snort" >blog.snort.org/</a>
+              <h4>The PhishLabs Blog</h4><a class="code-wrapper" href="http://blog.phishlabs.com/rss.xml" >info.phishlabs.com/blog</a>
+              <h4>Palo Alto Networks Blog</h4><a class="code-wrapper" href="http://researchcenter.paloaltonetworks.com/feed/" >researchcenter.paloaltonetworks.com</a>
+              <h4>ACE Team - Security, Performance &amp; Privacy</h4><a class="code-wrapper" href="http://blogs.msdn.com/ace_team/rss.xml" >blogs.msdn.microsoft.com/ace_team</a>
+              <h4>Kismet Wireless</h4><a class="code-wrapper" href="http://blog.kismetwireless.net/feeds/posts/default" >blog.kismetwireless.net/</a>
+              <h4>Aircrack-ng</h4><a class="code-wrapper" href="http://aircrack-ng.blogspot.com/feeds/posts/default" >aircrack-ng.blogspot.com/</a>
+              <h4>Naked Security</h4><a class="code-wrapper" href="http://nakedsecurity.sophos.com/feed/" >nakedsecurity.sophos.com</a>
+              <h4>Light Blue Touchpaper</h4><a class="code-wrapper" href="http://www.lightbluetouchpaper.org/feed/" >www.lightbluetouchpaper.org</a>
+              <h4>The CyberWire</h4><a class="code-wrapper" href="http://thecyberwire.libsyn.com/rss" >www.thecyberwire.com/podcasts/</a>
+              <h4>US-CERT Alerts</h4><a class="code-wrapper" href="http://www.us-cert.gov/channels/techalerts.rdf" >www.us-cert.gov/ncas/alerts.xml</a>
+              <h4>The Cloudflare Blog</h4><a class="code-wrapper" href="http://blog.cloudflare.com/rss.xml" >blog.cloudflare.com/</a>
+              <h4>WeLiveSecurity</h4><a class="code-wrapper" href="http://blog.eset.com/feed" >www.welivesecurity.com</a>
+              <h4>The Register - Security</h4><a class="code-wrapper" href="http://www.theregister.co.uk/security/headlines.atom" >www.theregister.co.uk/security/</a>
+              <h4>Bugtraq</h4><a class="code-wrapper" href="http://seclists.org/rss/bugtraq.rss" >seclists.org/#bugtraq</a>
+                <h4>Rapid7 Blog</h4><a class="code-wrapper" href="https://blog.rapid7.com/rss/" >blog.rapid7.com/</a>
+                <h4>Open Security Research</h4><a class="code-wrapper" href="http://blog.opensecurityresearch.com/feeds/posts/default" >blog.opensecurityresearch.com/</a>
+                <h4>Darknet</h4><a class="code-wrapper" href="http://feeds.feedburner.com/darknethackers" >www.darknet.org.uk</a>
+                <h4>Security Bytes</h4><a class="code-wrapper" href="http://feeds.feedburner.com/SecurityBytes" >searchsecurity.techtarget.com/blog/Security-Bytes</a>
+                <h4>Lastline</h4><a class="code-wrapper" href="https://www.lastline.com/feed/" >www.lastline.com</a>
+                <h4>Lockpicking</h4><a class="code-wrapper" href="http://www.reddit.com/r/lockpicking/.rss" >www.reddit.com/r/lockpicking/</a>
+                <h4>flyingpenguin</h4><a class="code-wrapper" href="http://feeds.feedburner.com/flyingpenguin" >www.flyingpenguin.com</a>
+                <h4>Securelist - Kaspersky Lab’s cyberthreat research and reports</h4><a class="code-wrapper" href="http://www.securelist.com/en/rss/allupdates" >securelist.com</a>
+                <h4>Daily Dave Mailing List</h4><a class="code-wrapper" href="http://seclists.org/rss/dailydave.rss" >seclists.org/#dailydave</a>
+                <h4>(ISC)² Blog</h4><p>(ISC)² Blog</p><a class="code-wrapper" href="http://feeds.feedburner.com/isc2Blog" >blog.isc2.org/isc2_blog/</a>
+                <h4>TrendLabs | Malware Blog - by Trend Micro</h4><a class="code-wrapper" href="http://feeds.trendmicro.com/Anti-MalwareBlog/" >blog.trendmicro.com/trendlabs-security-intelligence</a>
+                <h4>Immunity Products</h4><a class="code-wrapper" href="http://immunityproducts.blogspot.com/feeds/posts/default" >immunityproducts.blogspot.com/</a>
+                <h4>Infosecurity</h4><a class="code-wrapper" href="http://www.infosecurity-magazine.com/rss/news/" >www.infosecurity-magazine.com:443/news/</a>
+                <h4>Attack and Defense Labs</h4><a class="code-wrapper" href="http://blog.andlabs.org/feeds/posts/default" >blog.andlabs.org/</a>
+                <h4>DarkReading - All Stories</h4><a class="code-wrapper" href="http://www.darkreading.com/rss/all.xml" >www.darkreading.com</a>
+                <h4>Elastic Security</h4><a class="code-wrapper" href="http://elastic-security.com/feed/" >elasticsecurity.wordpress.com</a>
+                <h4>XyliBox</h4><a class="code-wrapper" href="http://xylibox.blogspot.com/feeds/posts/default" >www.xylibox.com/</a>
+                <h4>RSS | Veracode Blog</h4><a class="code-wrapper" href="http://www.veracode.com/blog/feed/" >www.veracode.com/blog-bkup-not-in-use</a>
+                <h4>Vulnerability Research and Development</h4><a class="code-wrapper" href="http://www.reddit.com/r/vrd/.rss" >www.reddit.com/r/vrd/</a>
+                <h4>Don't Stuff Beans Up Your Nose</h4><a class="code-wrapper" href="http://dontstuffbeansupyournose.com/feed/" >dontstuffbeansupyournose.com</a>
+                <h4>Liquidmatrix Security Digest</h4><a class="code-wrapper" href="http://feeds.feedburner.com/Liquidmatrix" >www.liquidmatrix.org/blog</a>
+                <h4>I Am Security</h4><a class="code-wrapper" href="http://www.iamit.org/blog/feed/" >www.iamit.org/blog</a>
+                <h4>Latest blog entries - 451 Research - Analyzing the Business of Enterprise IT Innovation</h4><a class="code-wrapper" href="https://451research.com/blog?format=feed&amp;type=rss" >451research.com/blog</a>
+                <h4>abuse.ch</h4><a class="code-wrapper" href="http://www.abuse.ch/?feed=rss2" >abuse.ch/</a>
+                <h4>DiabloHorn</h4><a class="code-wrapper" href="https://diablohorn.wordpress.com/feed/" >diablohorn.com</a>
+                <h4>Hack Bloc</h4><a class="code-wrapper" href="http://www.reddit.com/r/HackBloc/.rss" >www.reddit.com/r/HackBloc/</a>
+                <h4>The Henrybasset Blog</h4><a class="code-wrapper" href="http://henrybasset.blogspot.com/feeds/posts/default" >henrybasset.blogspot.com/</a>
+                <h4>Security-Shell</h4><a class="code-wrapper" href="http://security-sh3ll.blogspot.com/feeds/posts/default" >security-sh3ll.blogspot.com/</a>
+                <h4>Application and Cybersecurity Blog</h4><a class="code-wrapper" href="https://blog.securityinnovation.com/rss.xml" >blog.securityinnovation.com</a>
+                <h4>Heimdal Security Blog</h4><a class="code-wrapper" href="http://feeds.feedburner.com/HeimdalSecurityBlog" >heimdalsecurity.com/blog</a>
+                <h4>Penetration Testing</h4><a class="code-wrapper" href="http://seclists.org/rss/pen-test.rss" >seclists.org/#pen-test</a>
+                <h4>CASB and Cloud Cybersecurity Solutions</h4><a class="code-wrapper" href="https://www.cloudlock.com/feed/" >www.cloudlock.com</a>
+                <h4>The Security Practice</h4><a class="code-wrapper" href="http://feeds.feedburner.com/typepad/the_security_practice" >www.thesecuritypractice.com/the_security_practice/</a>
+                <h4>contagio</h4><a class="code-wrapper" href="http://contagiodump.blogspot.com/feeds/posts/default" >contagiodump.blogspot.com/</a>
+                <h4>Ars Technica » Risk Assessment</h4><a class="code-wrapper" href="http://feeds.feedburner.com/arstechnica/security" >arstechnica.com</a>
+                <h4>Nynaeve</h4><a class="code-wrapper" href="http://www.nynaeve.net/?feed=rss2" >www.nynaeve.net</a>
+                <h4>Executive Perspectives</h4><a class="code-wrapper" href="https://www.fireeye.com/content/fireeye-www/regional/en_US/www/blog/executive-perspective/_jcr_content.feed" >www.fireeye.com/blog/executive-perspective.html</a>
+                <h4>The LastPass Blog</h4><a class="code-wrapper" href="https://blog.lastpass.com/feed/" >blog.lastpass.com</a>
+                <h4>Wombat Security Blog</h4><a class="code-wrapper" href="http://info.wombatsecurity.com/blog/rss.xml" >www.wombatsecurity.com/blog</a>
+                <h4>Krebs on Security</h4><a class="code-wrapper" href="http://feeds.feedburner.com/KrebsOnSecurity" >krebsonsecurity.com</a>
+                <h4>Trail of Bits Blog</h4><a class="code-wrapper" href="http://blog.trailofbits.com/feed/" >blog.trailofbits.com</a>
+                <h4>Irongeek's Security Site</h4><a class="code-wrapper" href="http://feeds.feedburner.com/IrongeeksSecuritySite" >www.irongeek.com/</a>
+                <h4>Kali Linux</h4><a class="code-wrapper" href="https://www.kali.org/feed/" >www.kali.org</a>
+                <h4>tekwizz123's Blog</h4><a class="code-wrapper" href="http://tekwizz123.blogspot.com/feeds/posts/default" >tekwizz123.blogspot.com/</a>
+                <h4>Russian Business Network (RBN)</h4><a class="code-wrapper" href="http://rbnexploit.blogspot.com/feeds/posts/default" >rbnexploit.blogspot.com/</a>
+                <h4>TaoSecurity</h4><a class="code-wrapper" href="http://taosecurity.blogspot.com/feeds/posts/default" >taosecurity.blogspot.com/</a>
+                <h4>GNUCITIZEN Network</h4><a class="code-wrapper" href="http://feeds.feedburner.com/gnucitizenNetwork" >pipes.yahoo.com/pipes/pipe.info?_id=Sn4Ffa3x3BGCYK7_nkartA</a>
+                <h4>SecurityWeek RSS Feed</h4><a class="code-wrapper" href="http://feeds.feedburner.com/securityweek" >www.securityweek.com</a>
+                <h4>Graham Cluley</h4><a class="code-wrapper" href="http://feeds.feedburner.com/GrahamCluleysBlog" >www.grahamcluley.com</a>
+                <h4>Tenable Blog</h4><a class="code-wrapper" href="http://blog.tenablesecurity.com/atom.xml" >www.tenable.com/blog-2016</a>
+                <h4>AppSec Street Fighter - SANS Ins...</h4><a class="code-wrapper" href="http://software-security.sans.org/blog/feed/" >software-security.sans.org/blog</a>
+                <h4>Proofpoint</h4><a class="code-wrapper" href="http://feeds.feedburner.com/ProofpointEmailSecurityBlog" >www.proofpoint.com</a>
+                <h4>lcamtuf's blog</h4><a class="code-wrapper" href="http://lcamtuf.blogspot.com/feeds/posts/default" >lcamtuf.blogspot.com/</a>
+                <h4>Security Intelligence</h4><a class="code-wrapper" href="http://securityintelligence.com/feed/" >securityintelligence.com</a>
+                <h4>SploitF-U-N</h4><a class="code-wrapper" href="http://sploitfun.blogspot.com/feeds/posts/default" >sploitfun.blogspot.com/</a>
+                <h4>j00ru//vx tech blog</h4><a class="code-wrapper" href="http://j00ru.vexillium.org/?feed=rss2" >j00ru.vexillium.org</a>
+                <h4>Schneier on Security</h4><a class="code-wrapper" href="http://www.schneier.com/blog/index.rdf" >www.schneier.com/blog/</a>
+                <h4>ElcomSoft blog</h4><a class="code-wrapper" href="http://blog.crackpassword.com/feed/" >blog.elcomsoft.com</a>
+                <h4>Securosis Complete</h4><a class="code-wrapper" href="https://securosis.com/feeds/blog-complete/" >securosis.com/blog</a>
+                <h4>SecurityTube.Net</h4><a class="code-wrapper" href="http://feeds.feedburner.com/SecurityTube" >www.securitytube.net</a>
+                <h4>Duo Security Bulletin</h4><a class="code-wrapper" href="http://www.duosecurity.com/blog/rss" >duo.com/</a>
+                <h4>Aqua Blog</h4><a class="code-wrapper" href="http://blog.aquasec.com/rss.xml" >blog.aquasec.com</a>
+                <h4>Microsoft SVR&amp;D</h4><a class="code-wrapper" href="http://blogs.technet.com/swi/rss.xml" >blogs.technet.microsoft.com</a>
+                <h4>Reverse Engineering – InfoSec Resources</h4><a class="code-wrapper" href="http://resources.infosecinstitute.com/category/reverse-engineering-2/feed/" >resources.infosecinstitute.com</a>
+                <h4>blackMORE Ops</h4><a class="code-wrapper" href="http://www.blackmoreops.com/feed/" >www.blackmoreops.com</a>
+                <h4>Hot Monthly Questions - Information Security Stack Exchange</h4><a class="code-wrapper" href="http://security.stackexchange.com/feeds/month" >security.stackexchange.com/questions</a>
+                <h4>Talos Blog</h4><a class="code-wrapper" href="http://feeds.feedburner.com/feedburner/Talos" >blog.talosintelligence.com/</a>
+                <h4>XSS - Cross Site Scripting</h4><a class="code-wrapper" href="http://www.reddit.com/r/xss/.rss" >www.reddit.com/r/xss/</a>
+                <h4>ThreatTrack Security Labs Blog</h4><a class="code-wrapper" href="http://feeds.feedburner.com/threattracksecurity" >blog.threattrack.com</a>
+                <h4>MalwareMustDie!</h4><a class="code-wrapper" href="http://blog.malwaremustdie.org/atom.xml" >blog.malwaremustdie.org/</a>
+                <h4>Malware Analysis &amp; Reports</h4><a class="code-wrapper" href="http://www.reddit.com/r/Malware/.rss" >www.reddit.com/r/Malware/</a>
+                <h4>Low level programming for hackers</h4><a class="code-wrapper" href="http://www.reddit.com/r/lowlevel/.rss" >www.reddit.com/r/lowlevel/</a>
+                <h4>Hacking – InfoSec Resources</h4><a class="code-wrapper" href="http://resources.infosecinstitute.com/category/hacking-2/feed/" >resources.infosecinstitute.com</a>
+                <h4>moxie's blog</h4><a class="code-wrapper" href="http://blog.thoughtcrime.org/rss.xml" >www.thoughtcrime.org/blog/</a>
+                <h4>web application security .. beyond ...</h4><a class="code-wrapper" href="http://blog.h3xstream.com/feeds/posts/default" >blog.h3xstream.com/</a>
+                <h4>AlienVault Blogs</h4><a class="code-wrapper" href="http://feeds.feedblitz.com/alienvault-blogs&amp;x=1" >www.alienvault.com/blogs</a>
+                <h4>Insanely Low</h4><a class="code-wrapper" href="http://www.ragestorm.net/blogs/?feed=rss2" >www.ragestorm.net/blogs</a>
+                <h4>SecurityFocus News</h4><a class="code-wrapper" href="http://www.securityfocus.com/rss/news.xml" >www.securityfocus.com</a>
+                <h4>CYBER ARMS - Computer Security</h4><a class="code-wrapper" href="http://cyberarms.wordpress.com/feed/" >cyberarms.wordpress.com</a>
+                <h4>The Internet Patrol</h4><a class="code-wrapper" href="http://www.theinternetpatrol.com/feed/" >www.theinternetpatrol.com</a>
+                <h4>Reverse Engineering</h4><a class="code-wrapper" href="http://www.reddit.com/r/ReverseEngineering/.rss" >www.reddit.com/r/ReverseEngineering/</a>
+                <h4>Carnal0wnage Blog</h4><a class="code-wrapper" href="http://carnal0wnage.blogspot.com/feeds/posts/default" >carnal0wnage.attackresearch.com/</a>
+                <h4>Security – The Stack</h4><a class="code-wrapper" href="https://thestack.com/category/security/feed/" >thestack.com</a>
+                <h4>MalwareTech</h4><a class="code-wrapper" href="http://touchmymalware.blogspot.com/feeds/posts/default" >www.malwaretech.com</a>
+                <h4>ZeroSecurity</h4><a class="code-wrapper" href="http://zerosecurity.org/feed/" >zerosecurity.org</a>
+                <h4>Security Affairs </h4><a class="code-wrapper" href="http://securityaffairs.co/wordpress/feed" >securityaffairs.co/wordpress</a>
+                <h4>Cryptohaze Blog</h4><a class="code-wrapper" href="http://blog.cryptohaze.com/feeds/posts/default" >blog.cryptohaze.com/</a>
+                <h4>Blog – WhiteHat Security</h4><a class="code-wrapper" href="http://feeds.feedburner.com/WhitehatSecurityBlog" >www.whitehatsec.com</a>
+                <h4>Android Explorations</h4><a class="code-wrapper" href="http://nelenkov.blogspot.com/feeds/posts/default" >nelenkov.blogspot.com/</a>
+                <h4>Fortinet Blog | Latest Posts</h4><a class="code-wrapper" href="http://blog.fortinet.com/feed/" >blog.fortinet.com/feeds/latest.rss</a>
+                <h4>IT ProPortal</h4><a class="code-wrapper" href="https://www.itproportal.com/rss/" >www.itproportal.com/rss</a>
+                <h4>Carbon Black</h4><a class="code-wrapper" href="http://www.carbonblack.com/feed/" >www.carbonblack.com</a>
+                <h4>PaulDotCom</h4><a class="code-wrapper" href="http://pauldotcom.com/atom.xml" >securityweekly.com</a>
+                <h4>Fire Eye Threat Research </h4><a class="code-wrapper" href="http://www.fireeye.com/blog/feed" >www.fireeye.com/blog/threat-research.html</a>
+                <h4>JL's stuff</h4><a class="code-wrapper" href="http://gleeda.blogspot.com/feeds/posts/default" >gleeda.blogspot.com/</a>
+                <h4>AWS Security Blog</h4><a class="code-wrapper" href="http://blogs.aws.amazon.com/security/blog/feed/recentPosts.rss" >aws.amazon.com/blogs/security/</a>
+                <h4>Malware Intelligence Lab from FireEye - Research &amp; Analysis of Zero-Day &amp; Advanced Targeted Threats</h4><a class="code-wrapper" href="http://feeds.feedburner.com/FE_research" >blog.fireeye.com/research/</a>
+                <h4>Marco Ramilli's Blog</h4><a class="code-wrapper" href="http://marcoramilli.blogspot.com/feeds/posts/default" >marcoramilli.blogspot.com/</a>
+                <h4>The State of Security</h4><a class="code-wrapper" href="http://feeds.feedburner.com/tripwire-state-of-security" >www.tripwire.com/state-of-security</a>
+                <h4>Forensic Focus</h4><a class="code-wrapper" href="http://www.forensicfocus.com/rss/news2.php" >www.forensicfocus.com/</a>
+                <h4>Strategic Cyber LLC</h4><a class="code-wrapper" href="http://blog.strategiccyber.com/feed/" >blog.cobaltstrike.com</a>
+                <h4>TaoSecurity</h4><a class="code-wrapper" href="http://taosecurity.blogspot.com/atom.xml" >taosecurity.blogspot.com/</a>
+                <h4>Safe and Savvy Blog by F-Secure</h4><a class="code-wrapper" href="http://safeandsavvy.f-secure.com/feed/" >safeandsavvy.f-secure.com</a>
+                <h4>Blackhat Academy</h4><a class="code-wrapper" href="http://www.reddit.com/r/blackhat/.rss" >www.reddit.com/r/blackhat/</a>
+                <h4>US Blog RSS Feed</h4><a class="code-wrapper" href="https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/us-blog-rss-feed/" >www.nccgroup.trust/us/about-us/newsroom-and-events/blog/</a>
+                <h4>BruteForce Lab's Blog</h4><a class="code-wrapper" href="http://bruteforce.gr/feed" >bruteforcelab.com</a>
+                <h4>Hex blog</h4><a class="code-wrapper" href="http://hexblog.com/atom.xml" >www.hexblog.com</a>
+                <h4>Google Online Security Blog</h4><a class="code-wrapper" href="http://googleonlinesecurity.blogspot.com/atom.xml" >security.googleblog.com/</a>
+                <h4>US Blog RSS Feed</h4><a class="code-wrapper" href="http://chargen.matasano.com/atom.xml" >www.nccgroup.trust/us/about-us/newsroom-and-events/blog/</a>
+                <h4>g0tmi1k</h4><a class="code-wrapper" href="http://blog.g0tmi1k.com/feeds/posts/default" >blog.g0tmi1k.com/?rss1</a>
+                <h4>The Akamai Blog</h4><a class="code-wrapper" href="http://blogs.akamai.com/atom.xml" >blogs.akamai.com/</a>
+                <h4>Most popular articles from SC Magazine</h4><a class="code-wrapper" href="http://www.scmagazine.com/pages/rss.aspx?mp=true&amp;mpc=20" >www.scmagazine.com</a>
+                <h4>Reverse Engineering</h4><a class="code-wrapper" href="https://www.reddit.com/r/ReverseEngineering/.rss" >www.reddit.com/r/ReverseEngineering/</a>
+                <h4>THN : The Hackers News</h4><a class="code-wrapper" href="http://www.thehackernews.com/feeds/posts/default" >thehackernews.com/</a>
+                <h4>Microsoft Secure</h4><a class="code-wrapper" href="http://blogs.technet.com/mmpc/rss.xml" >cloudblogs.microsoft.com/microsoftsecure</a>
+                <h4>The Hacker's Choice - Freeworld News</h4><a class="code-wrapper" href="http://freeworld.thc.org/rss.xml.php" >freeworld.thc.org</a>
+                <h4>Wired: Threat Level</h4><a class="code-wrapper" href="http://blog.wired.com/27bstroke6/atom.xml" >www.wired.com/category/security/latest</a>
+                <h4>Blog</h4><a class="code-wrapper" href="https://www.cybereason.com/blog/rss.xml" >www.cybereason.com/blog</a>
+                <h4>Exploit Development – InfoSec Resources</h4><a class="code-wrapper" href="http://resources.infosecinstitute.com/category/exploit-development/feed/" >resources.infosecinstitute.com</a>
+                <h4>Offensive Security</h4><a class="code-wrapper" href="http://www.offensive-security.com/feed/" >www.offensive-security.com</a>
+                <h4>pwned</h4><a class="code-wrapper" href="http://www.reddit.com/r/pwned/.rss" >www.reddit.com/r/pwned/</a>
+                <h4>IOActive Labs Research</h4><a class="code-wrapper" href="http://ioactivelabs.blogspot.com/feeds/posts/default" >blog.ioactive.com/</a>
+                <h4>Fox-IT International blog</h4><a class="code-wrapper" href="http://blog.fox-it.com/feed/" >blog.fox-it.com</a>
+                <h4>Airbus D&amp;S CyberSecurity blog</h4><a class="code-wrapper" href="http://blog.cassidiancybersecurity.com/feed/atom" >blog.airbuscybersecurity.com/</a>
+                <h4>Dr Anton Chuvakin Blog PERSONAL ...</h4><a class="code-wrapper" href="http://chuvakin.blogspot.com/feeds/posts/default" >chuvakin.blogspot.com/</a>
+                <h4>Zero Day</h4><a class="code-wrapper" href="http://blogs.zdnet.com/security/wp-rss2.php" >www.zdnet.com/</a>
+                <h4>Tracking Cybercrime</h4><a class="code-wrapper" href="http://cyb3rsleuth.blogspot.com/feeds/posts/default" >cyb3rsleuth.blogspot.com/</a>
+                <h4>Uncommon Sense Security</h4><a class="code-wrapper" href="http://blog.uncommonsensesecurity.com/feeds/posts/default" >blog.uncommonsensesecurity.com/</a>
+                <h4>HACKMIAMI</h4><a class="code-wrapper" href="http://hackmiami.org/feed/" >hackmiami.org</a>
+                <h4>Exodus Intelligence</h4><a class="code-wrapper" href="http://blog.exodusintel.com/feed/" >blog.exodusintel.com</a>
+                <h4>Securelist / All Updates</h4><a class="code-wrapper" href="https://www.securelist.com/en/rss/allupdates" >securelist.com</a>
+                <h4>Penetration Testing Lab</h4><a class="code-wrapper" href="http://pentestlab.wordpress.com/feed/" >pentestlab.blog</a>
+                <h4>F-Secure Antivirus Research Webl...</h4><a class="code-wrapper" href="http://www.f-secure.com/weblog/weblog.rdf" >www.f-secure.com/weblog</a>
+                <h4>The Mac Security Blog</h4><a class="code-wrapper" href="http://blog.intego.com/feed/" >www.intego.com/mac-security-blog</a>
+                <h4>Forbes - Security</h4><a class="code-wrapper" href="http://www.forbes.com/security/feed2/" >www.forbes.com/security/</a>
+                <h4>Malwarebytes Labs</h4><a class="code-wrapper" href="http://blog.malwarebytes.org/feed/" >blog.malwarebytes.com</a>
+                <h4>Armorize Malware Blog</h4><a class="code-wrapper" href="http://blog.armorize.com/feeds/posts/default" >blog.armorize.com/</a>
+                <h4>Help Net Security - News</h4><a class="code-wrapper" href="http://feeds2.feedburner.com/HelpNetSecurity" >www.helpnetsecurity.com</a>
+                <h4>Information Security Short Takes</h4><a class="code-wrapper" href="http://feeds2.feedburner.com/shortinfosec" >www.shortinfosec.net/</a>
+                <h4>Malware-Traffic-Analysis.net - Blog Entries</h4><a class="code-wrapper" href="http://www.malware-traffic-analysis.net/blog-entries.rss" >www.malware-traffic-analysis.net/index.html</a>
+                <h4>Naked Security - Sophos</h4><a class="code-wrapper" href="http://feeds.feedburner.com/NakedSecurity" >nakedsecurity.sophos.com</a>
+                <h4>InfoSec Resources</h4><a class="code-wrapper" href="http://feeds.feedburner.com/infosecResources" >resources.infosecinstitute.com</a>
+                <h4>Full Disclosure</h4><a class="code-wrapper" href="http://seclists.org/rss/fulldisclosure.rss" >seclists.org/#fulldisclosure</a>
+                <h4>Reversing on Windows</h4><a class="code-wrapper" href="http://reversingonwindows.blogspot.com/feeds/posts/default" >reversingonwindows.blogspot.com/</a>
+                <h4>Rootkit</h4><a class="code-wrapper" href="http://www.reddit.com/r/rootkit/.rss" >www.reddit.com/r/rootkit/</a>
+                <h4>::eSploit::</h4><a class="code-wrapper" href="http://esploit.blogspot.com/feeds/posts/default" >esploit.blogspot.com/</a>
+                <h4>The Grey Corner</h4><a class="code-wrapper" href="http://grey-corner.blogspot.com/feeds/posts/default" >www.thegreycorner.com/</a>
+                <h4>Security Influencers Blog</h4><a class="code-wrapper" href="http://www1.contrastsecurity.com/blog/rss.xml" >www.contrastsecurity.com/security-influencers</a>
+                <h4>Abysssec Security Research</h4><a class="code-wrapper" href="http://www.abysssec.com/blog/feed/" >www.abysssec.com/blog</a>
+                <h4>threatpost - The First Stop for Security News</h4><a class="code-wrapper" href="http://threatpost.com/en_us/rss.xml" >threatpost.com</a>
+                <h4>Threat Research – Cisco Blog</h4><a class="code-wrapper" href="http://feeds.feedburner.com/CiscoBlogThreatResearch" >blogs.cisco.com</a>
+                <h4>pentestmonkey</h4><a class="code-wrapper" href="http://feeds.feedburner.com/pentestmonkey" >pentestmonkey.net</a>
+                <h4>McAfee Blogs</h4><a class="code-wrapper" href="http://blogs.mcafee.com/mcafee-labs/feed" >securingtomorrow.mcafee.com</a>
+                <h4>Security Padawan</h4><a class="code-wrapper" href="http://securitypadawan.blogspot.com/feeds/posts/default" >securitypadawan.blogspot.com/</a>
+                <h4>Malware Intelligence Blog</h4><a class="code-wrapper" href="http://malwareint.blogspot.com/feeds/posts/default" >malwareint.blogspot.com/</a>
+                <h4>SkullSecurity</h4><a class="code-wrapper" href="http://www.skullsecurity.org/blog/feed" >blog.skullsecurity.org</a>
+                <h4>Qualys Blog</h4><a class="code-wrapper" href="https://community.qualys.com/blogs/feeds/posts" >blog.qualys.com</a>
+                <h4>netsec - Information Security News &amp; Discussion</h4><a class="code-wrapper" href="http://www.reddit.com/r/netsec/.rss" >www.reddit.com/r/netsec/</a>
+                <h4>X-Force Research – Security Intelligence</h4><a class="code-wrapper" href="https://securityintelligence.com/category/x-force/feed/" >securityintelligence.com</a>
+                <h4>RCE Endeavors</h4><a class="code-wrapper" href="http://www.codereversing.com/blog/feed" >www.codereversing.com/blog</a>
+                <h4>The Malware Hunters</h4><a class="code-wrapper" href="http://malware-hunters.net/feed/" >malware-hunters.net</a>
+                <h4>OpenDNS Umbrella Blog</h4><a class="code-wrapper" href="http://feeds.opendns.com/OpendnsBlog" >umbrella.cisco.com/blog</a>
+                <h4>Menlo Security Blog</h4><a class="code-wrapper" href="https://www.menlosecurity.com/blog/rss.xml" >www.menlosecurity.com/blog</a>
+                <h4>Nullable Security</h4><a class="code-wrapper" href="https://blog.nullable.software/feeds/posts/default" >blog.nullable.software/</a>
+                <h4>Carnal0wnage &amp; Attack Research Blog</h4><a class="code-wrapper" href="http://carnal0wnage.attackresearch.com/rss.xml" >carnal0wnage.attackresearch.com/</a>
+                <h4>A Few Thoughts on Cryptographic Engineering</h4><a class="code-wrapper" href="http://blog.cryptographyengineering.com/feeds/posts/default" >blog.cryptographyengineering.com</a>
+                <h4>Blaze's Security Blog</h4><a class="code-wrapper" href="http://bartblaze.blogspot.com/feeds/posts/default" >bartblaze.blogspot.com/</a>
+                <h4>SANS Internet Storm Center</h4><a class="code-wrapper" href="http://isc.sans.org/rssfeed.xml" >isc.sans.edu</a>
+                <h4>DigitalMunition</h4><a class="code-wrapper" href="http://www.digitalmunition.me/feed/" >www.digitalmunition.me</a>
+                <h4>Alienvault Labs</h4><a class="code-wrapper" href="http://labs.alienvault.com/labs/index.php/feed/" >www.alienvault.com/blogs/labs-research</a>
+                <h4>McAfee Labs – McAfee Blogs</h4><a class="code-wrapper" href="http://blogs.mcafee.com/category/mcafee-labs/feed" >securingtomorrow.mcafee.com</a>
+                <h4>ImperialViolet</h4><a class="code-wrapper" href="http://www.imperialviolet.org/iv-rss.xml" >www.imperialviolet.org/</a>
+                <h4>HolisticInfoSec™</h4><p>HolisticInfoSec™</p><a class="code-wrapper" href="http://holisticinfosec.blogspot.com/feeds/posts/default" >holisticinfosec.blogspot.com/</a>
+                <h4>Checkmate</h4><a class="code-wrapper" href="http://niiconsulting.com/checkmate/feed/" >niiconsulting.com/checkmate</a>
+            </container>
+            <container class="col-2">
+                <h4>Microsoft Security Bulletins</h4><a class="code-wrapper" href="http://www.microsoft.com/technet/security/bulletin/secrss.aspx" >technet.microsoft.com/en-us/security/bulletin</a>
+                <h4>Exploit-DB.com RSS Feed</h4><a class="code-wrapper" href="http://www.exploit-db.com/rss.php" >www.exploit-db.com</a>
+                <h4>Red Hat Errata</h4><a class="code-wrapper" href="https://rhn.redhat.com/rpc/recent-errata.pxt" >www.redhat.com/apps/support/errata/</a>
+                <h4>National Vulnerability Database</h4><a class="code-wrapper" href="http://nvd.nist.gov/download/nvd-rss.xml" >web.nvd.nist.gov/view/vuln/search</a>
+                <h4>Microsoft Security Content</h4><a class="code-wrapper" href="http://www.microsoft.com/technet/security/bulletin/RssFeed.aspx?snscomprehensive" >technet.microsoft.com/en-us/security/bulletin</a>
+                <h4>Latest Bulletins</h4><a class="code-wrapper" href="http://aws.amazon.com/rss/security.rss" >aws.amazon.com/security/security-bulletins/</a>
+                <h4>SecurityTracker Vulnerability Headlines</h4><a class="code-wrapper" href="http://news.securitytracker.com/server/affiliate?61D319BD39309004" >securitytracker.com</a>
+            </container>
+          </div>
+        </container>
+        <footer>
+            Original content by <a class="code-wrapper" href="https://gist.github.com/0x9090/18db21f501bdab325ae4b242789a83c6" target="_blank" rel="noopener">0x9090 on GitHub</a>
+        </footer>
+    </body>
+</html>
