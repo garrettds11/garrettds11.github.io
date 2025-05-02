@@ -1,4 +1,4 @@
-![DNS-Workshop Logo](DNS-Workshop-Logo-small.png)
+![DNS-Workshop Logo](https://github.com/garrettds11/DNS-Workshop/blob/6f096fc9fd38680c5886d44bb161856b2653ac82/DNS-Workshop-Logo-small.png)
 
 ## A practical guide through the domain name system of the Internet. 
 
