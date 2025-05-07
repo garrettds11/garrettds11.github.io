@@ -1,0 +1,179 @@
+<html>
+<head>
+    <title>DNS Workshop</title>
+    <link rel="stylesheet" type="text/css" href="dns-workshop-stylesheet.css">
+</head>
+<body>
+    <h1 class="h1_heading">Module 2: Domain Names</h1>
+    <hr>
+    <h2 class="h2_heading">2.1 TLDs and ccTLDs</h2>
+    <p><strong>Top-Level Domains (TLDs)</strong> are the highest level in the DNS hierarchy. They fall into categories:</p>
+    <ul>
+    <li><strong>gTLDs</strong> (generic): <code>.com</code>, <code>.org</code>, <code>.net</code>, <code>.info</code></li>
+    <li><strong>ccTLDs</strong> (country-code): <code>.us</code>, <code>.de</code>, <code>.uk</code>, <code>.jp</code></li>
+    </ul>
+    <p>ICANN delegates TLDs to registries. For example:</p>
+    <ul>
+    <li><code>.com</code> → managed by Verisign</li>
+    <li><code>.uk</code> → managed by Nominet</li>
+    </ul>
+    <h3 class="lab">Labs:</h3>
+    <ul>
+    <li>Identify the TLD for your organization&#39;s domain.</li>
+    <li>Search ICANN&#39;s <a href="https://data.iana.org/TLD/tlds-alpha-by-domain.txt">TLD list</a></li>
+    </ul>
+    <hr>
+    <h2 class="h2_heading">2.2 Domain Hierarchy</h2>
+    <p>DNS names are structured <strong>right to left</strong>:</p>
+    <pre><code>www<span class="hljs-selector-class">.sales</span><span class="hljs-selector-class">.example</span><span class="hljs-selector-class">.com</span>.
+    └── subdomain
+        └── second-level domain (SLD)
+            └── <span class="hljs-attribute">top</span>-level domain (TLD)
+                └── root (.)
+    </code></pre><p>The <strong>Fully Qualified Domain Name (FQDN)</strong> ends with a dot (<code>.</code>) and includes every label from the subdomain to the root.</p>
+    <h3 class="lab">Lab:</h3>
+    <p>Use <code>dig +trace</code> to explore resolution levels:</p>
+    <pre><code>dig +trace www<span class="hljs-selector-class">.example</span><span class="hljs-selector-class">.com</span>
+    </code></pre><p>Observe:</p>
+    <ul>
+    <li>Root server</li>
+    <li>TLD server</li>
+    <li>Authoritative domain server</li>
+    </ul>
+    <hr>
+    <h2 class="h2_heading">2.3 Registries vs Registrars</h2>
+    <ul>
+    <li>A <strong>registry</strong> manages a specific TLD (e.g., Verisign for <code>.com</code>)</li>
+    <li>A <strong>registrar</strong> is a company that sells domain names (e.g., GoDaddy, Namecheap)</li>
+    </ul>
+    <p>Registrars interface with end-users, while registries maintain authoritative zone files.</p>
+    <h3 class="h3_heading">Real-world flow:</h3>
+    <ol>
+    <li>User registers <code>example.com</code> with Namecheap</li>
+    <li>Namecheap sends data to Verisign (the <code>.com</code> registry)</li>
+    <li>Verisign updates its nameservers with <code>NS</code> records for <code>example.com</code></li>
+    </ol>
+    <h3 class="exercise">Exercise:</h3>
+    <p>Look up who manages a domain:</p>
+    <pre><code><span class="hljs-selector-tag">whois</span> <span class="hljs-selector-tag">example</span><span class="hljs-selector-class">.com</span>
+    </code></pre><hr>
+    <h2 class="h2_heading">2.4 ICANN Oversight</h2>
+    <p><strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers):</p>
+    <ul>
+    <li>Oversees global domain name policies</li>
+    <li>Coordinates IP address allocation via IANA</li>
+    <li>Accredits registrars</li>
+    <li>Manages the DNS root</li>
+    </ul>
+    <p>ICANN ensures fair domain assignment and resolves registry/registrar disputes.</p>
+    <p>📝 Fact:
+    ICANN operates the root DNS server cluster with partners and maintains root zone integrity.</p>
+    <hr>
+    <h2 class="h2_heading">2.5 WHOIS and RDAP</h2>
+    <p>WHOIS and RDAP expose domain registration data:</p>
+    <ul>
+    <li>Registrar name</li>
+    <li>Creation &amp; expiration dates</li>
+    <li>Registrant (sometimes redacted)</li>
+    <li>DNS servers</li>
+    </ul>
+    <h3 class="h3_heading">Tools:</h3>
+    <pre><code><span class="hljs-selector-tag">whois</span> <span class="hljs-selector-tag">example</span><span class="hljs-selector-class">.com</span>
+    </code></pre><p>or visit:</p>
+    <ul>
+    <li><a href="https://who.is">https://who.is</a></li>
+    <li><a href="https://lookup.icann.org">https://lookup.icann.org</a></li>
+    </ul>
+    <p><strong>RDAP</strong> (Registration Data Access Protocol) is the modern JSON-based alternative to WHOIS:</p>
+    <pre><code><span class="hljs-symbol">https:</span>//rdap<span class="hljs-meta">.org</span>/domain/example.com
+    </code></pre><hr>
+    <h2 class="h2_heading">2.6 Internationalized Domain Names (IDNs)</h2>
+    <p><strong>IDNs</strong> support non-ASCII characters (e.g., Arabic, Chinese, accented Latin characters).</p>
+    <p>Under the hood, they’re encoded using <strong>Punycode</strong>:</p>
+    <pre><code>café.<span class="hljs-keyword">com</span> → <span class="hljs-keyword">xn</span>--caf-dma.<span class="hljs-keyword">com</span>
+    </code></pre><p>Check via:</p>
+    <pre><code><span class="hljs-keyword">dig</span> <span class="hljs-keyword">xn</span>--caf-dma.<span class="hljs-keyword">com</span>
+    </code></pre><p>📝 Use <code>idn</code> tool or browser bar to test conversion.</p>
+    <hr>
+    <h2 class="h2_heading">2.7 Domain Lifecycle</h2>
+    <p>Domains go through these phases:</p>
+    <table>
+    <thead>
+    <tr>
+    <th>Phase</th>
+    <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>Active</td>
+    <td>Domain is in use</td>
+    </tr>
+    <tr>
+    <td>Expired</td>
+    <td>Owner missed renewal</td>
+    </tr>
+    <tr>
+    <td>Grace Period</td>
+    <td>Renewable without extra cost (~30 days)</td>
+    </tr>
+    <tr>
+    <td>Redemption</td>
+    <td>Recoverable with penalty (~30 days)</td>
+    </tr>
+    <tr>
+    <td>Pending Delete</td>
+    <td>About to be purged (~5 days)</td>
+    </tr>
+    <tr>
+    <td>Available</td>
+    <td>Back on the market</td>
+    </tr>
+    </tbody>
+    </table>
+    <p>Domains can be <strong>backordered</strong> during the redemption phase using aftermarket services.</p>
+    <hr>
+    <h2 class="h2_heading">2.8 Domain Transfer</h2>
+    <p>To move a domain between registrars, you must:</p>
+    <ol>
+    <li>Unlock domain</li>
+    <li>Obtain <strong>EPP/Auth code</strong></li>
+    <li>Submit transfer request to the new registrar</li>
+    <li>Confirm via email (usually to registrant contact)</li>
+    </ol>
+    <h3 class="h3_heading">Transfer considerations:</h3>
+    <ul>
+    <li>Domains can’t transfer within 60 days of registration or prior transfer</li>
+    <li>WHOIS privacy must not block transfer emails</li>
+    </ul>
+    <h3 class="example">Example:</h3>
+    <pre><code><span class="hljs-keyword">Get</span> Auth Code → Submit <span class="hljs-keyword">to</span> <span class="hljs-keyword">New</span> Registrar → Confirm Transfer
+    </code></pre><hr>
+    <h2 class="challenge">💡 Challenge Exercise</h2>
+    <p>Choose 3 domains and:</p>
+    <ul>
+    <li>Identify their TLD category (gTLD or ccTLD)</li>
+    <li>Determine their registrar and registry</li>
+    <li>Check WHOIS and RDAP details</li>
+    <li>If an IDN, decode its Punycode</li>
+    </ul>
+    <hr>
+    <h2 class="summary">📘 Summary</h2>
+    <p>This module covered:</p>
+    <ul>
+    <li>TLD categories and governance</li>
+    <li>Hierarchy and structure of DNS names</li>
+    <li>Registry/registrar relationships</li>
+    <li>ICANN&#39;s role in global DNS management</li>
+    <li>Domain data protocols: WHOIS and RDAP</li>
+    <li>Lifecycle and transfer mechanics</li>
+    </ul>
+    <p>Tools used:</p>
+    <ul>
+    <li><code>whois</code></li>
+    <li><code>dig</code></li>
+    <li><code>idn</code></li>
+    <li>ICANN lookup portals</li>
+    </ul>
+</body>
+</html>

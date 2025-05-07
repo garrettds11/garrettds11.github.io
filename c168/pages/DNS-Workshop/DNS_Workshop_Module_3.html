@@ -1,0 +1,205 @@
+<html>
+<head>
+    <title>DNS Workshop</title>
+    <link rel="stylesheet" type="text/css" href="dns-workshop-stylesheet.css">
+</head>
+<body>
+    <h1 class="h1_heading">Module 3: Operational DNS</h1>
+    <hr>
+    <h2 class="h3_heading">3.1 Recursive Queries</h2>
+    <p>Recursive DNS servers handle resolution on behalf of clients by performing all the necessary queries across the DNS hierarchy until they find a final answer.</p>
+    <p><strong>Process:</strong></p>
+    <ol>
+    <li>Client queries a recursive resolver (e.g., 1.1.1.1)</li>
+    <li>Resolver checks its cache</li>
+    <li>If no match, it contacts the root server, then the TLD, then the authoritative server</li>
+    <li>Result is returned to client and cached</li>
+    </ol>
+    <pre><code><span class="hljs-keyword">dig</span> +trace openai.<span class="hljs-keyword">com</span>
+    </code></pre><h3 class="lab">Lab:</h3>
+    <ul>
+    <li>Identify your default resolver using <code>nslookup</code> or <code>dig</code></li>
+    <li>Flush DNS cache, then resolve <code>example.com</code> and analyze timings</li>
+    </ul>
+    <hr>
+    <h2 class="h2_heading">3.2 Glue Records</h2>
+    <p>Glue records are A or AAAA records placed in the <strong>parent zone</strong> to resolve the IP address of a nameserver that is <strong>within the child zone</strong> it serves.</p>
+    <h3 class="h3_heading">Why glue is needed:</h3>
+    <ul>
+    <li>Prevent circular dependency</li>
+    <li>Ensure resolvers can reach the nameserver</li>
+    </ul>
+    <h3 class="example">Example:</h3>
+    <p>Domain: <code>example.com</code>
+    Nameserver: <code>ns1.example.com</code></p>
+    <p>Glue record:</p>
+    <pre><code><span class="hljs-selector-tag">example</span><span class="hljs-selector-class">.com</span>. <span class="hljs-selector-tag">IN</span> <span class="hljs-selector-tag">NS</span> <span class="hljs-selector-tag">ns1</span><span class="hljs-selector-class">.example</span><span class="hljs-selector-class">.com</span>.
+    <span class="hljs-selector-tag">ns1</span><span class="hljs-selector-class">.example</span><span class="hljs-selector-class">.com</span>. <span class="hljs-selector-tag">IN</span> <span class="hljs-selector-tag">A</span> 192<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.1</span>  ← <span class="hljs-selector-tag">glue</span> <span class="hljs-selector-tag">record</span>
+    </code></pre><h3 id="lab-">Lab:</h3>
+    <pre><code><span class="hljs-keyword">dig</span> <span class="hljs-keyword">com</span> NS
+    <span class="hljs-keyword">dig</span> example.<span class="hljs-keyword">com</span> NS +additional
+    </code></pre><hr>
+    <h2 class="h2_heading">3.3 DNS Caching and TTL</h2>
+    <p>Caching is crucial for DNS performance and scalability. When a resolver answers a query, it stores the result for a time defined by the <strong>TTL</strong> (Time To Live).</p>
+    <h3 class="h3_heading">TTL effects:</h3>
+    <ul>
+    <li>Lower TTL = faster update propagation</li>
+    <li>Higher TTL = less resolver load</li>
+    </ul>
+    <h3 class="lab">Lab:</h3>
+    <pre><code><span class="hljs-keyword">dig</span> example.<span class="hljs-keyword">com</span>
+    </code></pre><p>Check the <code>TTL</code> column in the response.</p>
+    <hr>
+    <h2 class="h2_heading">3.4 Negative Caching</h2>
+    <p>When a resolver receives an <strong>NXDOMAIN</strong> (non-existent domain) response, it caches that too — this is called <strong>negative caching</strong>.</p>
+    <p>Negative TTL is controlled by the SOA record’s <code>minimum</code> field:</p>
+    <pre><code>dig example<span class="hljs-selector-class">.com</span> SOA
+    </code></pre><p>Try:</p>
+    <pre><code>dig nonexistent<span class="hljs-selector-class">.example</span><span class="hljs-selector-class">.com</span>
+    </code></pre><hr>
+    <h2 class="h2_heading">3.5 DNS Protocol Structure</h2>
+    <p>A DNS message consists of:</p>
+    <ul>
+    <li>Header</li>
+    <li>Question</li>
+    <li>Answer</li>
+    <li>Authority</li>
+    <li>Additional</li>
+    </ul>
+    <p>It uses:</p>
+    <ul>
+    <li>UDP (default for queries)</li>
+    <li>TCP (zone transfers, large responses)</li>
+    </ul>
+    <pre><code>sudo tcpdump -i <span class="hljs-literal">any</span> <span class="hljs-keyword">port</span> <span class="hljs-number">53</span>
+    </code></pre><p>Use Wireshark to visualize each section of a query.</p>
+    <hr>
+    <h2 class="h2_heading">3.6 EDNS (Extension Mechanisms for DNS)</h2>
+    <p><strong>EDNS(0)</strong> extends DNS to support:</p>
+    <ul>
+    <li>Larger UDP packet sizes (&gt;512 bytes)</li>
+    <li>DNSSEC data</li>
+    <li>Future flags</li>
+    </ul>
+    <p>Without EDNS, DNSSEC wouldn’t work.</p>
+    <h3 class="lab">Lab:</h3>
+    <pre><code>dig example<span class="hljs-selector-class">.com</span> +edns=<span class="hljs-number">0</span> +dnssec
+    </code></pre><hr>
+    <h2 class="h2_heading">3.7 Transport Protocols</h2>
+    <h3 class="h3_heading">UDP</h3>
+    <ul>
+    <li>Default protocol for most DNS queries</li>
+    <li>Lightweight, stateless</li>
+    </ul>
+    <h3 class="h3_heading">TCP</h3>
+    <ul>
+    <li>Used for zone transfers</li>
+    <li>Fallback when UDP is truncated</li>
+    </ul>
+    <h3 class="h3_heading">DNS over HTTPS (DoH)</h3>
+    <ul>
+    <li>Encrypts DNS inside HTTPS</li>
+    <li>Privacy-enhancing</li>
+    </ul>
+    <h3 class="h3_heading">DNS over TLS (DoT)</h3>
+    <ul>
+    <li>Encrypts DNS using TLS on port 853</li>
+    </ul>
+    <p>Try:</p>
+    <ul>
+    <li><code>curl https://cloudflare-dns.com/dns-query</code></li>
+    <li>Test DoH in Firefox or Chromium</li>
+    </ul>
+    <hr>
+    <h2 class="h2_heading">3.8 Public Resolvers</h2>
+    <p>Resolvers that support DNSSEC, DoH, DoT, and fast caching:</p>
+    <table>
+    <thead>
+    <tr>
+    <th>Provider</th>
+    <th>IP Address</th>
+    <th>Features</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>Google</td>
+    <td>8.8.8.8</td>
+    <td>DNSSEC, DoT</td>
+    </tr>
+    <tr>
+    <td>Cloudflare</td>
+    <td>1.1.1.1</td>
+    <td>DoH, DoT</td>
+    </tr>
+    <tr>
+    <td>Quad9</td>
+    <td>9.9.9.9</td>
+    <td>Malware filter</td>
+    </tr>
+    </tbody>
+    </table>
+    <p>Test:</p>
+    <pre><code><span class="hljs-selector-tag">dig</span> @<span class="hljs-keyword">1</span>.<span class="hljs-keyword">1</span>.<span class="hljs-keyword">1</span>.<span class="hljs-keyword">1</span> openai.com
+    </code></pre><hr>
+    <h2 class="h2_heading">3.9 Dynamic DNS (DDNS)</h2>
+    <p>DDNS allows devices to automatically update DNS records when their IP changes. Common for:</p>
+    <ul>
+    <li>Home routers</li>
+    <li>VPNs</li>
+    <li>Small office networks</li>
+    </ul>
+    <p>Popular providers:</p>
+    <ul>
+    <li>DynDNS</li>
+    <li>No-IP</li>
+    </ul>
+    <p>Example:</p>
+    <pre><code>myrouter<span class="hljs-selector-class">.dyndns</span><span class="hljs-selector-class">.org</span> → updated IP every <span class="hljs-selector-tag">time</span> the router reboots
+    </code></pre><hr>
+    <h2 class="h2_heading">3.10 Dynamic DNS Responses</h2>
+    <p>DNS servers may return different results depending on:</p>
+    <ul>
+    <li>Geographic region</li>
+    <li>Server load</li>
+    <li>Query source</li>
+    </ul>
+    <p>This is called:</p>
+    <ul>
+    <li><strong>GeoDNS</strong></li>
+    <li><strong>Split-horizon DNS</strong></li>
+    <li><strong>Round-robin DNS</strong></li>
+    </ul>
+    <h3 class="lab">Lab:</h3>
+    <pre><code>dig @<span class="hljs-number">8.8</span><span class="hljs-number">.8</span><span class="hljs-number">.8</span> example.com
+    dig @<span class="hljs-number">1.1</span><span class="hljs-number">.1</span><span class="hljs-number">.1</span> example.com
+    </code></pre><p>Compare the answers — are they different?</p>
+    <hr>
+    <h2 class="challenge">💡 Challenge Exercise</h2>
+    <ol>
+    <li>Use <code>dig +trace</code> to resolve a popular website</li>
+    <li>Identify TTLs at each level</li>
+    <li>Find a domain using GeoDNS</li>
+    <li>Use <code>tcpdump</code> or Wireshark to capture DNS queries</li>
+    <li>Switch to DoH and compare behavior</li>
+    </ol>
+    <hr>
+    <h2 class="summary">📘 Summary</h2>
+    <p>This module covered:</p>
+    <ul>
+    <li>Recursive resolution process</li>
+    <li>DNS caching (positive/negative)</li>
+    <li>Message structure and packet capture</li>
+    <li>EDNS and DNSSEC interaction</li>
+    <li>Privacy-preserving DNS transports</li>
+    <li>Dynamic DNS records and responses</li>
+    </ul>
+    <p>Tools used:</p>
+    <ul>
+    <li><code>dig</code></li>
+    <li><code>tcpdump</code>, <code>Wireshark</code></li>
+    <li>DNS-over-HTTPS endpoints</li>
+    <li><code>host</code>, <code>nslookup</code>, browser DNS settings</li>
+    </ul>    
+</body>
+</html>
