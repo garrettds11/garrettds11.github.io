@@ -1,0 +1,270 @@
+<h1 class="text-3xl font-bold mt-6 mb-4 text-base-content">SimpleTTS v0.1</h1>
+<p class="mb-4 leading-relaxed">
+  <strong class="font-bold">SimpleTTS</strong> is a minimal text-to-speech
+  application with both <strong class="font-bold">local</strong> and
+  <strong class="font-bold">cloud</strong> modes.
+</p>
+<ul class="list-disc list-inside my-4 space-y-1">
+  <li>
+    🧩 <strong class="font-bold">Local (offline) mode</strong> — Flask + pyttsx3
+    + pydub.<br />Generates speech on your own machine using system voices.
+  </li>
+  <li>
+    ☁️ <strong class="font-bold">Cloud mode</strong> — AWS Lambda + Polly +
+    S3.<br />Produces high-quality speech in the cloud and returns a presigned
+    URL.
+  </li>
+</ul>
+<p class="mb-4 leading-relaxed">
+  The <strong class="font-bold">frontend</strong> (plain HTML/CSS/JS) can talk
+  to either one—just change the API base URL.
+</p>
+<hr class="my-6 border-base-300" />
+<h2 class="text-2xl font-bold mt-6 mb-4 text-base-content">
+  🧱 Project structure
+</h2>
+<pre class="bg-base-300 p-4 rounded my-4 overflow-x-auto"><code class="text-sm">
+simpletts/
+├─ frontend/
+│  ├─ index.html          <span class="hljs-comment"># shared UI for local + cloud</span>
+│  └─ style.css           <span class="hljs-comment"># modern responsive styling</span>
+├─ <span class="hljs-keyword">local</span>/
+│  ├─ app.py              <span class="hljs-comment"># Flask API: /api/speak and /api/pull</span>
+│  └─ requirements.txt    <span class="hljs-comment"># Flask, pyttsx3, pydub, Flask-CORS</span>
+└─ cloud/
+├─ lambda_handler.py   <span class="hljs-comment"># AWS Lambda using Polly + S3</span>
+├─ requirements.txt    <span class="hljs-comment"># boto3 only</span>
+└─ template-sam.yaml   <span class="hljs-comment"># optional SAM deployment template</span>
+</code></pre>
+<hr class="my-6 border-base-300" />
+<h2 class="text-2xl font-bold mt-6 mb-4 text-base-content">
+  🚀 Run locally (offline mode)
+</h2>
+<h3 class="text-xl font-bold mt-6 mb-4 text-base-content">
+  1. Clone the repo and open a shell
+</h3>
+<pre
+  class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+><code class="text-sm">git <span class="hljs-built_in">clone</span> https://github.com/&lt;your-username&gt;/SimpleTTS.git
+<span class="hljs-built_in">cd</span> SimpleTTS/local</code></pre>
+<h3 class="text-xl font-bold mt-6 mb-4 text-base-content">
+  2. Create and activate a virtual environment
+</h3>
+<pre
+  class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+><code class="text-sm">py -m venv <span class="hljs-string">.venv</span>
+.\<span class="hljs-string">.venv</span>\Scripts\Activate.ps1
+<span class="hljs-comment"># If PowerShell blocks activation:</span>
+<span class="hljs-comment"># Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</span></code></pre>
+<h3 class="text-xl font-bold mt-6 mb-4 text-base-content">
+  3. Install dependencies
+</h3>
+<pre
+  class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+><code class="text-sm">pip <span class="hljs-keyword">install</span> -r requirements.txt</code></pre>
+<h3 class="text-xl font-bold mt-6 mb-4 text-base-content">
+  4. Install ffmpeg (needed for MP3 export)
+</h3>
+<ul class="list-disc list-inside my-4 space-y-1">
+  <li>
+    <strong class="font-bold">Windows (Chocolatey)</strong>
+    <code>choco install ffmpeg</code>
+  </li>
+  <li>
+    <strong class="font-bold">macOS (Homebrew)</strong>
+    <code>brew install ffmpeg</code>
+  </li>
+  <li>
+    <strong class="font-bold">Ubuntu/Debian</strong>
+    <code>sudo apt-get install ffmpeg</code>
+  </li>
+</ul>
+<h3 class="text-xl font-bold mt-6 mb-4 text-base-content">
+  5. Run the Flask server
+</h3>
+<pre
+  class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+><code class="text-sm"><span class="hljs-keyword">python</span> app.<span class="hljs-keyword">py</span></code></pre>
+<p class="mb-4 leading-relaxed">You should see:</p>
+<pre
+  class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+><code class="text-sm">* Running <span class="hljs-keyword">on</span> http:<span class="hljs-comment">//127.0.0.1:5000</span></code></pre>
+<h3 class="text-xl font-bold mt-6 mb-4 text-base-content">
+  6. Open the frontend
+</h3>
+<p class="mb-4 leading-relaxed">From another terminal:</p>
+<pre
+  class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+><code class="text-sm"><span class="hljs-function"><span class="hljs-title">cd</span></span> ..\frontend
+python -m http.server <span class="hljs-number">5500</span></code></pre>
+<p class="mb-4 leading-relaxed">
+  Then visit
+  <strong class="font-bold"
+    ><a
+      href="http://127.0.0.1:5500/index.html"
+      title="null"
+      class="link link-primary"
+      >http://127.0.0.1:5500/index.html</a
+    ></strong
+  >
+</p>
+<p class="mb-4 leading-relaxed">
+  Click <strong class="font-bold">Speak</strong> for playback or
+  <strong class="font-bold">Download MP3</strong> to save audio.
+</p>
+<hr class="my-6 border-base-300" />
+<h2 class="text-2xl font-bold mt-6 mb-4 text-base-content">
+  ☁️ Run in the cloud (optional)
+</h2>
+<ol class="list-decimal list-inside my-4 space-y-1">
+  <li>
+    <p class="mb-4 leading-relaxed">
+      Install <strong class="font-bold">AWS CLI</strong> and
+      <strong class="font-bold">SAM CLI</strong>, then configure your AWS
+      credentials.
+    </p>
+  </li>
+  <li>
+    <p class="mb-4 leading-relaxed">From <code>cloud/</code>, deploy with:</p>
+    <pre
+      class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+    ><code class="text-sm">sam build
+sam <span class="hljs-keyword">deploy</span> <span class="hljs-params">--guided</span></code></pre>
+  </li>
+  <li>
+    <p class="mb-4 leading-relaxed">Provide a unique S3 bucket for audio.</p>
+  </li>
+  <li>
+    <p class="mb-4 leading-relaxed">
+      After deployment, copy the printed
+      <strong class="font-bold">API endpoint</strong>.
+    </p>
+  </li>
+  <li>
+    <p class="mb-4 leading-relaxed">
+      In the browser console on <code>index.html</code>, set it:
+    </p>
+    <pre
+      class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+    ><code class="text-sm"><span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">setItem</span>(<span class="hljs-string">&#x27;apiBase&#x27;</span>,<span class="hljs-string">&#x27;https://&lt;api-id&gt;.execute-api.&lt;region&gt;.amazonaws.com&#x27;</span>);</code></pre>
+  </li>
+  <li>
+    <p class="mb-4 leading-relaxed">
+      Refresh the page—SimpleTTS now speaks via AWS Polly.
+    </p>
+  </li>
+</ol>
+<hr class="my-6 border-base-300" />
+<h2 class="text-2xl font-bold mt-6 mb-4 text-base-content">
+  ⚙️ Dependencies (SBOM v0.1)
+</h2>
+<div class="overflow-x-auto my-4">
+  <table class="table table-zebra w-full">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Version</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Python</td>
+        <td>3.11 +</td>
+        <td>Runtime</td>
+      </tr>
+      <tr>
+        <td>Flask</td>
+        <td>3.0.3</td>
+        <td>Web framework</td>
+      </tr>
+      <tr>
+        <td>Flask-CORS</td>
+        <td>4.0.0</td>
+        <td>CORS support for browser requests</td>
+      </tr>
+      <tr>
+        <td>pyttsx3</td>
+        <td>2.90</td>
+        <td>Local TTS engine</td>
+      </tr>
+      <tr>
+        <td>pydub</td>
+        <td>0.25.1</td>
+        <td>Audio export to MP3</td>
+      </tr>
+      <tr>
+        <td>ffmpeg</td>
+        <td>system pkg</td>
+        <td>MP3 encoder</td>
+      </tr>
+      <tr>
+        <td>boto3</td>
+        <td>1.34.162</td>
+        <td>(cloud) AWS SDK</td>
+      </tr>
+      <tr>
+        <td>AWS Lambda, Polly, S3</td>
+        <td>services</td>
+        <td>Cloud speech API</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<hr class="my-6 border-base-300" />
+<h2 class="text-2xl font-bold mt-6 mb-4 text-base-content">🧩 Endpoints</h2>
+<div class="overflow-x-auto my-4">
+  <table class="table table-zebra w-full">
+    <thead>
+      <tr>
+        <th>Route</th>
+        <th>Method</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>/api/speak</code></td>
+        <td>POST</td>
+        <td>Returns WAV audio (local) or <code>{ audioUrl }</code> (cloud)</td>
+      </tr>
+      <tr>
+        <td><code>/api/pull</code></td>
+        <td>GET</td>
+        <td>Returns MP3; add <code>?download=1</code> to force download</td>
+      </tr>
+      <tr>
+        <td><code>/health</code></td>
+        <td>GET</td>
+        <td>Simple 200 OK for health checks</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<hr class="my-6 border-base-300" />
+<h2 class="text-2xl font-bold mt-6 mb-4 text-base-content">💡 Tips</h2>
+<ul class="list-disc list-inside my-4 space-y-1">
+  <li>If “Failed to fetch,” ensure Flask is running and CORS is permissive.</li>
+  <li>
+    Serve <code>index.html</code> over HTTP (not file://) to avoid browser CORS.
+  </li>
+  <li>
+    Adjust playback delay in <code>index.html</code> (<code
+      >setTimeout(..., 500)</code
+    >) for smoother starts.
+  </li>
+  <li>
+    Add or swap voices using the system TTS engine (see <code>app.py</code>).
+  </li>
+</ul>
+<hr class="my-6 border-base-300" />
+<h2 class="text-2xl font-bold mt-6 mb-4 text-base-content">🏷 Version</h2>
+<p class="mb-4 leading-relaxed">
+  <strong class="font-bold">SimpleTTS v0.1</strong>
+  <em class="italic"
+    >MVP with offline Flask API, MP3 download, and shared frontend.</em
+  >
+</p>
+<pre
+  class="bg-base-300 p-4 rounded my-4 overflow-x-auto"
+><code class="text-sm"></code></pre>
